@@ -1,0 +1,240 @@
+/* Kloom website — matches the app's design language: dark, grayscale, minimal.
+   Tokens mirror Shared/Theme.swift: page #121212 (appGray 0.07), cards #1a1a1a
+   (0.10), 14px continuous-ish radius, SF Pro Display via the system stack. */
+
+:root {
+    --page:        #121212;
+    --card:        #1a1a1a;
+    --card-border: rgba(255, 255, 255, 0.07);
+    --ink:         #ffffff;
+    --ink-soft:    #adadad;
+    --ink-faint:   #6b6b6b;
+    --radius:      14px;
+    --measure:     680px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    background: var(--page);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+                 system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Header ------------------------------------------------------------------ */
+
+header {
+    padding: 40px 0 0;
+}
+
+.bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.wordmark {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    gap: 22px;
+}
+
+nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 15px;
+}
+
+nav a:hover, nav a[aria-current="page"] { color: var(--ink); }
+
+/* Hero -------------------------------------------------------------------- */
+
+.hero {
+    padding: 92px 0 76px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.hero h1 {
+    font-size: clamp(34px, 7vw, 52px);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.hero p {
+    margin-top: 20px;
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 30em;
+}
+
+.badge {
+    display: inline-block;
+    margin-top: 32px;
+    padding: 9px 16px;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+
+/* Sections ---------------------------------------------------------------- */
+
+section { padding: 64px 0; }
+
+.eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 22px;
+}
+
+h2 {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+p, li { color: var(--ink-soft); }
+
+p + p { margin-top: 14px; }
+
+.lede { font-size: 17px; }
+
+a { color: var(--ink); }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 22px;
+}
+
+.card p { font-size: 15px; }
+
+/* Documents (privacy / terms) --------------------------------------------- */
+
+.doc { padding: 72px 0 40px; }
+
+.doc h1 {
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.updated {
+    margin-top: 8px;
+    color: var(--ink-faint);
+    font-size: 15px;
+}
+
+.doc section {
+    padding: 0;
+    margin-top: 38px;
+}
+
+.doc section h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* Support ----------------------------------------------------------------- */
+
+.faq { margin-top: 8px; }
+
+.faq details {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 10px;
+}
+
+.faq summary {
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none;
+}
+
+.faq summary::-webkit-details-marker { display: none; }
+
+.faq summary::after {
+    content: "+";
+    float: right;
+    color: var(--ink-faint);
+    font-weight: 400;
+}
+
+.faq details[open] summary::after { content: "–"; }
+
+.faq details p {
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+.contact {
+    margin-top: 34px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 26px;
+}
+
+.contact a { font-weight: 600; }
+
+/* Footer ------------------------------------------------------------------ */
+
+footer {
+    border-top: 1px solid var(--card-border);
+    padding: 34px 0 56px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+footer, footer a { color: var(--ink-faint); font-size: 14px; }
+
+footer nav a { font-size: 14px; color: var(--ink-faint); }
+
+footer nav a:hover { color: var(--ink); }
