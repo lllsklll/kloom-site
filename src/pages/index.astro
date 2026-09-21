@@ -1,0 +1,541 @@
+---
+// The homepage: the intro, the scroll story, and the sections below it.
+import '../styles/v2.css';
+import { SITE } from '../data/site';
+import { url } from '../lib/url';
+import FloatCard from '../components/v2/FloatCard.astro';
+import Phone from '../components/v2/Phone.astro';
+import Row from '../components/v2/Row.astro';
+import Nav from '../components/v2/Nav.astro';
+import Copy from '../components/v2/Copy.astro';
+import Interlude from '../components/v2/Interlude.astro';
+import More from '../components/v2/More.astro';
+import Pricing from '../components/v2/Pricing.astro';
+import FAQ from '../components/v2/FAQ.astro';
+import CTA from '../components/v2/CTA.astro';
+import Footer from '../components/v2/Footer.astro';
+import { floating } from '../components/v2/items';
+
+// Kept to what the app actually does (see FAQ): you pick the space and can add a note.
+const steps = [
+  {
+    label: 'Share',
+    title: 'Save from any app.',
+    body: 'Reading in Safari, watching on YouTube, scrolling Instagram — tap Share, then Kloom.',
+  },
+  {
+    label: 'Save',
+    title: 'Pick a space. Add a note.',
+    body: 'Choose where it goes before it saves. It lands as a clean card, not a raw URL.',
+  },
+  {
+    label: 'Find',
+    title: 'Find it in a glance.',
+    body: 'Search across every space at once. The link from three weeks ago is one word away.',
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kloom — Save links from anywhere.</title>
+    <meta name="description" content={SITE.description} />
+    <link rel="icon" href={url('favicon.png')} type="image/png" />
+    <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
+    <script is:inline>
+      // Every load starts at the top with the intro. The browser's scroll restoration and a
+      // leftover #hash (from clicking "See how it works") would otherwise drop the page
+      // mid-story and run the intro and the scroll story at the same time.
+      document.documentElement.classList.add('js');
+      history.scrollRestoration = 'manual';
+      if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro');
+    </script>
+  </head>
+  <body class="min-h-screen overflow-x-clip bg-canvas font-sans text-neutral-900 antialiased">
+    <Nav />
+    <main class="px-4 pt-24 sm:pt-32">
+      <section class="mx-auto max-w-2xl text-center">
+        <a
+          data-reveal
+          href={SITE.appStoreURL}
+          class="group mb-8 inline-flex items-center gap-3 rounded-full border border-neutral-200 bg-white py-1 pr-4 pl-1 text-sm text-neutral-600 shadow-xs transition hover:border-neutral-300 hover:text-neutral-900"
+        >
+          <span class="rounded-full bg-neutral-900 px-2.5 py-1 text-[11px] font-semibold tracking-widest text-white">NEW</span>
+          Kloom 1.0 is on the App Store
+          <svg viewBox="0 0 16 16" class="size-3.5 fill-none stroke-current stroke-[1.5] transition group-hover:translate-x-0.5" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" />
+          </svg>
+        </a>
+        <h1 data-reveal class="text-4xl font-semibold tracking-tight text-balance sm:text-6xl">All your links, one calm home.</h1>
+        <p data-reveal class="mt-6 text-lg leading-relaxed text-pretty text-neutral-600">
+          Share a link from any app and Kloom keeps it as a clean card — sorted into spaces, easy to find, readable even offline.
+        </p>
+        <div data-reveal class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a
+            href={SITE.appStoreURL}
+            class="inline-flex h-12 items-center justify-center rounded-full bg-neutral-900 px-6 text-base font-medium text-white transition hover:bg-neutral-700"
+          >
+            Download on the App Store
+          </a>
+          <a
+            href="#features"
+            class="inline-flex h-12 items-center justify-center rounded-full border border-neutral-300 px-6 text-base font-medium text-neutral-900 transition hover:bg-neutral-100"
+          >
+            See how it works
+          </a>
+        </div>
+      </section>
+
+      <!-- Scroll story: the hero phone pins to the screen and walks through Share → Save → Find. -->
+      <section id="features" data-story class="relative -mx-4 h-[400svh]">
+        <!-- No overflow clipping here: the intro lifts the phone above this stage. -->
+        <div class="sticky top-0 h-svh px-4">
+          <div class="relative mx-auto flex h-full max-w-3xl justify-center pt-24">
+            <!-- On desktop the script slides this left/right with the scroll (translate + a slight swing). -->
+            <div data-phone-wrap class="origin-top">
+              <Phone />
+            </div>
+
+            <!-- Step copy: alternates sides opposite the phone on desktop; a glass caption at the bottom on smaller screens. -->
+            {
+              steps.map((step, i) => (
+                <article
+                  data-step-text={i + 1}
+                  data-side={i % 2 === 0 ? 'left' : 'right'}
+                  class="pointer-events-none absolute z-10 opacity-0 blur-sm transition duration-600 ease-[cubic-bezier(.2,.8,.2,1)] data-on:opacity-100 data-on:blur-none max-lg:inset-x-0 max-lg:bottom-5 max-lg:mx-auto max-lg:max-w-sm max-lg:translate-y-3 max-lg:rounded-2xl max-lg:bg-white/70 max-lg:p-4 max-lg:shadow-[inset_0_1px_0_rgb(255_255_255/1)] max-lg:backdrop-blur-xl max-lg:backdrop-saturate-200 max-lg:data-on:translate-y-0 lg:top-1/2 lg:w-[22rem] lg:-translate-y-1/2 lg:data-[side=left]:left-5 lg:data-[side=left]:[&:not([data-on])]:-translate-x-10 lg:data-[side=right]:right-5 lg:data-[side=right]:[&:not([data-on])]:translate-x-10"
+                >
+                  <p class="text-xs font-medium tracking-wider text-neutral-500 uppercase">
+                    <span class="tabular-nums">0{i + 1}</span> / 03 · {step.label}
+                  </p>
+                  <h2 class="mt-2 text-xl font-semibold tracking-tight text-balance lg:text-4xl">{step.title}</h2>
+                  <p class="mt-2 text-sm leading-relaxed text-pretty text-neutral-600 lg:mt-4 lg:text-base">{step.body}</p>
+                </article>
+              ))
+            }
+
+            <!-- Progress: a thin vertical track just outside the navbar's right edge, desktop only. -->
+            <div class="absolute top-1/2 -right-8 hidden -translate-y-1/2 flex-col gap-1.5 lg:flex" aria-hidden="true">
+              {steps.map((_, i) => <span data-step-dot={i + 1} class="h-5 w-0.5 rounded-full bg-neutral-300 transition-all duration-500 data-on:h-10 data-on:bg-neutral-900" />)}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Copy />
+
+      <Interlude />
+
+      <More />
+
+      <Pricing />
+
+      <FAQ />
+
+      <CTA />
+    </main>
+
+    <Footer />
+
+    <!-- Preloader. Source: Bergman, Whittaker & Schooler (2021), J. of Librarianship and
+         Information Science — only 41 of 250 (16%) bookmarked targets were retrieved via bookmarks. -->
+    <div data-preloader class="fixed inset-0 z-40 grid place-items-center px-6" aria-hidden="true">
+      <div data-pre-bg class="absolute inset-0 bg-canvas"></div>
+      <figure class="relative max-w-[30rem]">
+        <p
+          data-pre-line
+          class="font-['Times_New_Roman',Times,serif] text-[32px] leading-[1.05] tracking-[-0.02em] text-neutral-900 sm:text-[42px]"
+        >
+          <span data-stat class="tabular-nums">0</span>% of the time, people went back to a bookmarked page without using the bookmark.
+        </p>
+        <figcaption data-pre-line class="mt-6 text-xs leading-relaxed text-neutral-500">
+          Bergman, Whittaker &amp; Schooler, “Out of sight and out of mind: Bookmarks are created but not used,”
+          <i>Journal of Librarianship and Information Science</i>, 2021.
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- Intro: links floating around the screen, before they fly into the phone. -->
+    <div data-intro-layer class="pointer-events-none fixed inset-3 z-30 sm:inset-6" aria-hidden="true">
+      {
+        floating.map((item, i) => (
+          <div
+            data-card={i}
+            data-rot={item.rot}
+            class:list={[
+              'absolute top-[calc(var(--my)*100%)] left-[calc(var(--mx)*100%)] w-38 [translate:calc(var(--mx)*-100%)_calc(var(--my)*-100%)] sm:top-[calc(var(--y)*100%)] sm:left-[calc(var(--x)*100%)] sm:w-52 xl:w-60 sm:[translate:calc(var(--x)*-100%)_calc(var(--y)*-100%)]',
+              item.wideOnly && 'max-xl:hidden',
+            ]}
+            style={`--x: ${item.x}; --y: ${item.y}; --mx: ${item.mx ?? item.x}; --my: ${item.my ?? item.y}; transform: rotate(${item.rot}deg)`}
+          >
+            <div class="animate-float" style={`animation-delay: -${i * 0.8}s; animation-duration: ${5 + (i % 3)}s`}>
+              <FloatCard item={item} />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      floating.map((item, i) => (
+        <template data-row={i}>
+          <Row item={item} isNew />
+        </template>
+      ))
+    }
+
+    <script>
+      const root = document.documentElement;
+      const ease = 'cubic-bezier(.2, .8, .2, 1)';
+      const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+      type Box = { left: number; right: number; top: number; bottom: number };
+      const overlaps = (a: Box, b: Box, pad: number) =>
+        a.right > b.left - pad && a.left < b.right + pad && a.bottom > b.top - pad && a.top < b.bottom + pad;
+
+      async function intro() {
+        const phone = document.querySelector<HTMLElement>('[data-phone]')!;
+        const list = phone.querySelector<HTMLElement>('[data-list]')!;
+        const countEl = phone.querySelector<HTMLElement>('[data-count]')!;
+        const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-card]')).filter((card) => card.offsetParent !== null);
+        const reveals = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+
+        // Instant, never the smooth behaviour the stylesheet sets: the intro must
+        // start at the top, not glide there while the preloader is already running.
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        root.style.overflow = 'hidden';
+
+        // 0. Preloader: the quote fades in and the stat counts up to 84.
+        const pre = document.querySelector<HTMLElement>('[data-preloader]')!;
+        const preBg = pre.querySelector<HTMLElement>('[data-pre-bg]')!;
+        const stat = pre.querySelector<HTMLElement>('[data-stat]')!;
+        pre.querySelectorAll<HTMLElement>('[data-pre-line]').forEach((el, i) =>
+          el.animate(
+            [
+              { opacity: 0, transform: 'translateY(10px)' },
+              { opacity: 1, transform: 'none' },
+            ],
+            { duration: 900, delay: 150 + i * 350, easing: ease, fill: 'backwards' },
+          ),
+        );
+        const t0 = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min(1, (now - t0) / 1400);
+          stat.textContent = String(Math.round(84 * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        await wait(1600);
+
+        // 1. While the quote is still up, the backdrop clears and the links slowly
+        //    surface behind it, then keep floating.
+        preBg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 1800, easing: 'ease', fill: 'forwards' });
+        // Cards that would sit under the quote wait and come in as the quote leaves.
+        const quote = pre.querySelector('figure')!.getBoundingClientRect();
+        let late = 0;
+        cards.forEach((card, i) => {
+          const rot = `rotate(${card.dataset.rot}deg)`;
+          const held = overlaps(card.getBoundingClientRect(), quote, 16);
+          card.animate(
+            [
+              { opacity: 0, transform: `translateY(24px) scale(.94) ${rot}`, filter: 'blur(8px)' },
+              { opacity: 1, transform: `translateY(0) scale(1) ${rot}`, filter: 'blur(0)' },
+            ],
+            held
+              ? { duration: 1000, delay: 3900 + late++ * 150, easing: ease, fill: 'backwards' }
+              : { duration: 1600, delay: 300 + i * 220, easing: ease, fill: 'backwards' },
+          );
+        });
+        await wait(3800);
+
+        // The quote leaves once it has had time to be read (~5.4s on screen). The
+        // phone starts rising while it is still fading — waiting for the fade to
+        // finish first left a dead beat between the two.
+        const leaving = pre.animate(
+          [
+            { opacity: 1, transform: 'none' },
+            { opacity: 0, transform: 'translateY(-8px)' },
+          ],
+          { duration: 600, easing: ease, fill: 'forwards' },
+        );
+        leaving.finished.then(() => pre.remove());
+        await wait(180);
+
+        // 2. The phone rises into the middle of the screen, scaled to fit.
+        const rest = phone.getBoundingClientRect();
+        // Sits a little below the exact middle of the screen.
+        const lower = Math.min(110, innerHeight * 0.12);
+        const scale = Math.min(1, (innerHeight - 40 - lower * 2) / rest.height);
+        // The wrapper may be scaled down to fit short screens; transforms on the phone
+        // are in its own (unscaled) pixels.
+        const ws = rest.height / phone.offsetHeight;
+        const dy = (innerHeight / 2 + lower - (rest.top + rest.height / 2)) / ws;
+        const centered = `translateY(${dy}px) scale(${scale})`;
+
+        // Cards in the phone's way slide aside as it comes up, if there is a free spot
+        // for them. The rest are the first to fly in.
+        const cx = rest.left + rest.width / 2;
+        const cy = innerHeight / 2 + lower;
+        const pad = 20;
+        const spot = {
+          left: cx - (rest.width * scale) / 2 - pad,
+          right: cx + (rest.width * scale) / 2 + pad,
+          top: cy - (rest.height * scale) / 2 - pad,
+          bottom: cy + (rest.height * scale) / 2 + pad,
+        };
+        const blocked: HTMLElement[] = [];
+        const nudge = () => {
+          const rects: Box[] = cards.map((card) => card.getBoundingClientRect());
+          cards.forEach((card, i) => {
+            const r = rects[i];
+            if (!overlaps(r, spot, 0)) return;
+            const toLeft = Math.max(spot.left - r.right, 8 - r.left);
+            const toRight = Math.min(spot.right - r.left, innerWidth - 8 - r.right);
+            const moved = (dx: number): Box => ({ left: r.left + dx, right: r.right + dx, top: r.top, bottom: r.bottom });
+            const fits = (dx: number) => !overlaps(moved(dx), spot, 0) && rects.every((o, j) => j === i || !overlaps(moved(dx), o, 8));
+            const dx = (r.left + r.right) / 2 < cx ? [toLeft, toRight].find(fits) : [toRight, toLeft].find(fits);
+            if (dx === undefined) return void blocked.push(card);
+            rects[i] = moved(dx);
+            card.animate([{ marginLeft: '0px' }, { marginLeft: `${dx}px` }], { duration: 1000, easing: ease, fill: 'forwards' });
+          });
+        };
+
+        nudge();
+        const rise = phone.animate(
+          [
+            { opacity: 0, transform: `translateY(${dy + 140}px) scale(${scale * 0.92})` },
+            { opacity: 1, transform: centered },
+          ],
+          { duration: 900, easing: ease, fill: 'forwards' },
+        );
+        await wait(750);
+
+        // 3. Each link flies into the phone and becomes a row in the list.
+        let count = Number(countEl.textContent) || 0;
+        const addRow = (id: string) => {
+          const tpl = document.querySelector<HTMLTemplateElement>(`template[data-row="${id}"]`)!;
+          const row = tpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
+          list.prepend(row);
+          const h = row.offsetHeight;
+          row.animate(
+            [
+              { height: '0px', opacity: 0, transform: 'scale(.94)' },
+              { height: `${h}px`, opacity: 1, transform: 'none' },
+            ],
+            { duration: 450, easing: ease },
+          );
+          countEl.textContent = String(++count);
+        };
+
+        const fly = async (card: HTMLElement) => {
+          const from = card.getBoundingClientRect();
+          const to = list.getBoundingClientRect();
+          const tx = to.left + to.width / 2 - (from.left + from.width / 2);
+          const ty = to.top + 28 - (from.top + from.height / 2);
+          const rot = Number(card.dataset.rot);
+          await card.animate(
+            [
+              { transform: `rotate(${rot}deg)`, opacity: 1 },
+              { transform: `translate(${tx * 0.55}px, ${ty * 0.55 - 50}px) rotate(${rot / 2}deg) scale(.6)`, opacity: 1, offset: 0.5 },
+              { transform: `translate(${tx}px, ${ty}px) rotate(0deg) scale(.22)`, opacity: 0 },
+            ],
+            { duration: 850, easing: 'cubic-bezier(.5, 0, .25, 1)', fill: 'forwards' },
+          ).finished;
+          addRow(card.dataset.card!);
+        };
+
+        const flightOrder = [...blocked, ...cards.filter((card) => !blocked.includes(card))];
+        await Promise.all(flightOrder.map((card, i) => wait(i * 160).then(() => fly(card))));
+        await wait(300);
+
+        // 4. The phone settles into place and the hero copy comes in.
+        const settle = phone.animate([{ transform: centered }, { transform: 'none' }], {
+          duration: 1900,
+          easing: 'cubic-bezier(.45, 0, .15, 1)',
+          fill: 'forwards',
+        });
+        reveals.forEach((el, i) =>
+          el.animate(
+            [
+              { opacity: 0, transform: 'translateY(18px)', filter: 'blur(6px)' },
+              { opacity: 1, transform: 'none', filter: 'blur(0)' },
+            ],
+            { duration: 1000, delay: 500 + i * 160, easing: ease, fill: 'backwards' },
+          ),
+        );
+        root.classList.remove('intro');
+        phone.style.opacity = '1';
+
+        await settle.finished;
+        rise.cancel();
+        settle.cancel();
+        root.style.overflow = '';
+      }
+
+      if (root.classList.contains('intro')) intro();
+    </script>
+
+    <script>
+      // Scroll story. The sticky stage pins the phone; how far you've scrolled through
+      // the section picks the step, and each step plays its little scene in the phone.
+      const story = document.querySelector<HTMLElement>('[data-story]')!;
+      const wrap = story.querySelector<HTMLElement>('[data-phone-wrap]')!;
+      const phone = story.querySelector<HTMLElement>('[data-phone]')!;
+      const $ = <T extends HTMLElement = HTMLElement>(sel: string) => phone.querySelector<T>(sel)!;
+      const list = $('[data-list]');
+      const countEl = $('[data-count]');
+      const query = $('[data-query]');
+      const calm = $('[data-calm]');
+      const parts = {
+        browser: $('[data-browser]'),
+        sheet: $('[data-sheet]'),
+        kloom: $('[data-kloom-icon]'),
+        compose: $('[data-compose]'),
+        read: $('[data-space="Read"]'),
+        save: $('[data-save]'),
+        toast: $('[data-toast]'),
+        search: $('[data-search]'),
+      };
+      const texts = Array.from(story.querySelectorAll<HTMLElement>('[data-step-text]'));
+      const dots = Array.from(story.querySelectorAll<HTMLElement>('[data-step-dot]'));
+      const on = (el: HTMLElement, state: boolean) => el.toggleAttribute('data-on', state);
+
+      // Keep the whole phone on screen under the navbar on short viewports.
+      const fit = () => {
+        wrap.style.scale = String(Math.min(1, (innerHeight - 96 - 24) / phone.offsetHeight));
+      };
+      fit();
+      addEventListener('resize', fit);
+
+      let saved = false;
+      const setSaved = (state: boolean) => {
+        if (saved === state) return;
+        saved = state;
+        if (state) list.prepend(calm);
+        countEl.textContent = String(Number(countEl.textContent) + (state ? 1 : -1));
+        filter();
+      };
+      const filter = () => {
+        const q = query.textContent!.trim().toLowerCase();
+        list.querySelectorAll<HTMLElement>('[data-row-item]').forEach((row) => {
+          const hide = (row === calm && !saved) || (q !== '' && !row.dataset.title!.includes(q));
+          row.toggleAttribute('data-hidden', hide);
+        });
+      };
+
+      let gen = 0;
+      const show = (step: number) => {
+        const g = ++gen;
+        const later = (ms: number, fn: () => void) => setTimeout(() => g === gen && fn(), ms);
+        dots.forEach((d) => on(d, Number(d.dataset.stepDot) === step));
+
+        // Base state for this step, so scrolling back up always undoes the later ones.
+        on(parts.browser, step === 1 || step === 2);
+        on(parts.sheet, false);
+        on(parts.kloom, false);
+        on(parts.compose, step === 2);
+        on(parts.read, false);
+        on(parts.save, false);
+        on(parts.toast, false);
+        on(parts.search, step === 3);
+        if (step < 2) setSaved(false);
+        if (step === 3) setSaved(true);
+        if (step !== 3) query.textContent = '';
+        filter();
+
+        if (step === 1) {
+          later(450, () => on(parts.sheet, true));
+          later(1200, () => on(parts.kloom, true));
+        }
+        if (step === 2) {
+          later(700, () => on(parts.read, true));
+          later(1400, () => on(parts.save, true));
+          later(1700, () => {
+            on(parts.browser, false);
+            on(parts.compose, false);
+            setSaved(true);
+          });
+          later(2000, () => on(parts.toast, true));
+          later(3600, () => on(parts.toast, false));
+        }
+        if (step === 3) {
+          [...'calm'].forEach((ch, i) =>
+            later(500 + i * 180, () => {
+              query.textContent += ch;
+              filter();
+            }),
+          );
+        }
+      };
+
+      // Where the phone sits across the scroll: -1 = left, 0 = centre, 1 = right. It glides
+      // between these, opposite the step copy, so the scroll visibly moves things.
+      const path: [number, number][] = [
+        [0, 0],
+        [0.1, 1],
+        [0.3, 1],
+        [0.42, -1],
+        [0.62, -1],
+        [0.74, 1],
+        [1, 1],
+      ];
+      const wide = matchMedia('(min-width: 1024px)');
+      const sway = (p: number) => {
+        for (let i = 1; i < path.length; i++) {
+          const [p0, v0] = path[i - 1];
+          const [p1, v1] = path[i];
+          if (p > p1) continue;
+          const t = (p - p0) / (p1 - p0);
+          const e = t * t * (3 - 2 * t);
+          return { x: v0 + (v1 - v0) * e, tilt: ((v1 - v0) / 2) * Math.sin(Math.PI * t) };
+        }
+        return { x: path[path.length - 1][1], tilt: 0 };
+      };
+      const place = (p: number) => {
+        if (!wide.matches) {
+          wrap.style.translate = '';
+          wrap.style.rotate = '';
+          return;
+        }
+        // Same width as the navbar (max-w-3xl, 12px page gutter): the phone's edge lines up with the navbar's.
+        const reach = (Math.min(innerWidth - 24, 768) - phone.offsetWidth) / 2;
+        const { x, tilt } = sway(p);
+        wrap.style.translate = `${(x * reach).toFixed(1)}px 0`;
+        wrap.style.rotate = `${(tilt * 3).toFixed(2)}deg`;
+      };
+
+      // On desktop a step's copy only shows while the phone holds on the opposite side;
+      // while the phone crosses over, no copy is up, so it never runs into the phone.
+      const holds: [number, number][] = [
+        [0.08, 0.32],
+        [0.4, 0.64],
+        [0.72, 1.01],
+      ];
+      let shownText = -1;
+      const caption = (p: number, step: number) => {
+        const i = wide.matches ? holds.findIndex(([a, b]) => p >= a && p < b) + 1 : step;
+        if (i === shownText) return;
+        shownText = i;
+        texts.forEach((t) => on(t, Number(t.dataset.stepText) === i));
+      };
+
+      let current = -1;
+      const update = () => {
+        const r = story.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+        place(p);
+        const step = p < 0.06 ? 0 : p < 0.36 ? 1 : p < 0.68 ? 2 : 3;
+        if (step !== current) {
+          current = step;
+          show(step);
+        }
+        caption(p, step);
+      };
+      addEventListener('scroll', update, { passive: true });
+      addEventListener('resize', update);
+      update();
+    </script>
+  </body>
+</html>

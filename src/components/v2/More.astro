@@ -1,0 +1,137 @@
+---
+// "And more": privacy plus the smaller features, after the scroll story. Every claim
+// here comes from the app's FAQ / feature list and the LIMITS in data/site.ts.
+import { LIMITS } from '../../data/site';
+
+const small = [
+  {
+    title: 'Read it offline',
+    body: 'Keep a clean, readable copy of an article that opens without a connection. Some sites, like X and Instagram, block this.',
+    icon: 'M4 5.5A1.5 1.5 0 0 1 5.5 4H10v16H5.5A1.5 1.5 0 0 1 4 18.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H14v16h4.5a1.5 1.5 0 0 0 1.5-1.5z',
+  },
+  {
+    title: 'Pin what matters',
+    body: 'Keep the links you need most at the top of a space.',
+    icon: 'M9 4h6l-1 5 3 3v2H7v-2l3-3zM12 14v6',
+  },
+  {
+    title: 'Notes and images',
+    body: `Add a note of up to ${LIMITS.noteCharacters} characters, or images, to any link.`,
+    icon: 'M5 4h10l4 4v12H5zM15 4v4h4M8 12h8M8 16h5',
+  },
+  {
+    title: 'No double saves',
+    body: 'Kloom warns you before you save the same link twice.',
+    icon: 'M12 3a9 9 0 1 1-9 9M12 3v5M12 3L8 6.5M9 12l2 2 4-4',
+  },
+  {
+    title: 'A Trash you can undo',
+    body: `Deleted links wait in Trash for ${LIMITS.trashDaysFree} days — ${LIMITS.trashDaysPro} with Pro.`,
+    icon: 'M5 7h14M10 4h4M7 7l1 13h8l1-13M10 11v5M14 11v5',
+  },
+  {
+    title: 'Folders inside spaces',
+    body: 'Group links within a space so a long list stays calm.',
+    icon: 'M4 7a2 2 0 0 1 2-2h3l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z',
+    pro: true,
+  },
+  {
+    title: 'Copy in one tap',
+    body: 'Every card has a copy button, and the last links you copied stay one tap away.',
+    icon: 'M9 9h10v10H9zM5 15V5h10',
+  },
+  {
+    // SavedLink.isNew: seen-based, with a hard cap of AppConstants.newLinkWindowHours (48).
+    title: 'New until you read it',
+    body: 'A fresh save wears a NEW badge until you open it — so nothing quietly piles up.',
+    icon: 'M12 3l2.4 5.2 5.6.7-4.2 3.9 1.2 5.6L12 15.6 6.999 18.4l1.2-5.6L4 8.9l5.6-.7z',
+  },
+  {
+    title: 'Take it with you',
+    body: 'Export everything to HTML bookmarks or CSV.',
+    icon: 'M12 4v11M8 11l4 4 4-4M5 20h14',
+    pro: true,
+  },
+];
+
+const nevers = ['No sign-up', 'No login', 'No Kloom server'];
+---
+
+<section id="more" class="mx-auto max-w-3xl px-1 pt-32 pb-32 sm:px-0">
+  <div class="px-4 sm:px-5">
+    <p data-rise class="text-xs font-medium tracking-wider text-neutral-500 uppercase">And more</p>
+    <h2 data-rise style="--d: 80ms" class="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
+      Small things that add up.
+    </h2>
+  </div>
+
+  <div class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- Privacy: the one big card. -->
+    <article
+      data-rise
+      data-dark
+      class="relative isolate overflow-hidden rounded-3xl bg-neutral-900 p-6 text-white sm:col-span-2 sm:p-8 lg:col-span-3"
+    >
+      <!-- Same faint grid as the closing card, fading out toward the edges, so every
+           dark surface on the page reads as one material. -->
+      <div
+        class="pointer-events-none absolute inset-0 -z-10 opacity-60 [background-image:linear-gradient(rgb(255_255_255/0.07)_1px,transparent_1px),linear-gradient(90deg,rgb(255_255_255/0.07)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_75%_90%_at_72%_0%,#000_15%,transparent_78%)]"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="pointer-events-none absolute -top-24 -right-16 -z-10 size-72 rounded-full bg-linear-to-br from-sky-400/25 via-indigo-400/15 to-transparent blur-2xl" aria-hidden="true"></div>
+      <div class="relative grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
+        <div>
+          <span class="grid size-10 place-items-center rounded-xl bg-white/10" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="size-5 fill-none stroke-current stroke-[1.75]"><rect x="5" y="10" width="14" height="10" rx="2.5" /><path d="M8 10V7.5a4 4 0 0 1 8 0V10" /></svg>
+          </span>
+          <p class="mt-5 text-xs font-medium tracking-wider text-white/50 uppercase">Private by design</p>
+          <h3 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">No account. No server.</h3>
+          <p class="mt-3 max-w-md text-sm leading-relaxed text-pretty text-white/70 sm:text-base">
+            Open it and start saving. Your links live on your iPhone, and with Cloud Sync on they stay in your own private
+            iCloud. Nothing passes through a Kloom server, because there isn’t one.
+          </p>
+        </div>
+        <ul class="flex flex-wrap gap-2 sm:flex-col sm:items-end">
+          {
+            nevers.map((n) => (
+              <li class="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/90">
+                <svg viewBox="0 0 16 16" class="size-3.5 fill-none stroke-emerald-400 stroke-[2.5]" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" /></svg>
+                {n}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </article>
+
+    {
+      small.map((f, i) => (
+        <article data-rise style={`--d: ${(i % 3) * 90}ms`} class="rounded-3xl bg-white p-6">
+          <div class="flex items-center justify-between">
+            <span class="grid size-10 place-items-center rounded-xl bg-stone-100 text-neutral-900" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="size-5 fill-none stroke-current stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]"><path d={f.icon} /></svg>
+            </span>
+            {f.pro && <span class="rounded-full bg-neutral-900 px-2 py-0.5 text-[10px] font-semibold tracking-widest text-white">PRO</span>}
+          </div>
+          <h3 class="mt-5 text-base font-semibold tracking-tight">{f.title}</h3>
+          <p class="mt-1.5 text-sm leading-relaxed text-pretty text-neutral-600">{f.body}</p>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  // Reveal cards as they scroll into view (styles in v2.css; skipped for reduced motion).
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.setAttribute('data-on', '');
+        io.unobserve(e.target);
+      }),
+    { rootMargin: '0px 0px -12% 0px' },
+  );
+  document.querySelectorAll('#more [data-rise]').forEach((el) => io.observe(el));
+</script>

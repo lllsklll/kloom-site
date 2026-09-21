@@ -1,0 +1,61 @@
+---
+// Footer for v2. Same links as the v1 footer — Support, Privacy and Terms must
+// stay reachable from every page, because the App Store listing points at them.
+import Logo from '../Logo.astro';
+import { SITE } from '../../data/site';
+import { url } from '../../lib/url';
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Features', href: `${url()}#features` },
+      { label: 'Pricing', href: `${url()}#pricing` },
+      { label: 'FAQ', href: `${url()}#faq` },
+    ],
+  },
+  {
+    title: 'Help',
+    links: [
+      { label: 'Support', href: url('support.html') },
+      { label: 'Privacy', href: url('privacy.html') },
+      { label: 'Terms', href: url('terms.html') },
+    ],
+  },
+  {
+    title: 'Get Kloom',
+    links: [{ label: 'App Store', href: SITE.appStoreURL }],
+  },
+];
+---
+
+<footer class="mx-auto max-w-3xl px-5 pb-12">
+  <div class="grid grid-cols-2 gap-10 border-t border-neutral-200 pt-12 sm:grid-cols-[2fr_repeat(3,1fr)]">
+    <div class="col-span-2 sm:col-span-1">
+      <Logo class="h-3.5 w-auto text-neutral-900" />
+      <p class="mt-4 text-sm text-neutral-500">{SITE.tagline}</p>
+    </div>
+    {
+      columns.map((col) => (
+        <div>
+          <p class="text-xs font-medium tracking-wider text-neutral-500 uppercase">{col.title}</p>
+          <ul class="mt-4 grid gap-2.5">
+            {col.links.map((l) => (
+              <li>
+                <a href={l.href} class="text-sm text-neutral-600 transition hover:text-neutral-900">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="mt-12 flex flex-wrap justify-between gap-3 border-t border-neutral-200 pt-6 font-mono text-xs text-neutral-500">
+    <span>© {year} Kloom</span>
+    <span>Made for iPhone. No trackers on the app or this site.</span>
+  </div>
+</footer>

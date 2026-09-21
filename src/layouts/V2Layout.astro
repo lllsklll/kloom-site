@@ -1,0 +1,45 @@
+---
+// The shell every page shares: the glass navbar, the page canvas, the footer.
+// The homepage builds its own <head> (it has the intro script to run before
+// paint); everything else comes through here.
+import '../styles/v2.css';
+import Nav from '../components/v2/Nav.astro';
+import Footer from '../components/v2/Footer.astro';
+import { SITE } from '../data/site';
+import { url } from '../lib/url';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://kloom.app').href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={url('favicon.png')} type="image/png" />
+    <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body class="min-h-screen overflow-x-clip bg-canvas font-sans text-neutral-900 antialiased">
+    <Nav />
+    <main class="px-4 pt-32 sm:pt-40">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
