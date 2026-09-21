@@ -20,6 +20,25 @@
   }
 }
 
+/* Everything on the first screen below the hero copy: main's top padding (pt-32),
+   the story stage's top padding (pt-24) and the part of the 620px phone that shows
+   (380px, a little over half). The hero fills the rest, so on tall monitors the copy
+   centres and the phone only peeks in, instead of sitting fully on screen. On a
+   laptop the copy is taller than this minimum, so its layout is unchanged. */
+:root {
+  --hero-below: calc(8rem + 6rem + 380px);
+  /* How far the pinned story stage drops so the 620px phone (which sits 6rem below
+     the stage top, clear of the navbar) lands in the middle of the screen. Zero on
+     short screens, where the phone already fills the height. Only `top` moves, so
+     the phone's resting place under the hero, and --hero-below, stay the same. */
+  --story-shift: max(0px, calc((100svh - 620px) / 2 - 6rem));
+  /* The intro's floating cards are placed as fractions of their layer. Past a laptop
+     sized screen the layer stops growing and stays centred, so on big monitors the
+     cards gather round the quote instead of drifting off into the corners. */
+  --intro-max-w: 1400px;
+  --intro-max-h: 920px;
+}
+
 /* A white band that dissolves into the page instead of meeting it on a line.
    The fade lives in the band's own background, so there are no extra elements and
    the edges stay soft at any section height. */

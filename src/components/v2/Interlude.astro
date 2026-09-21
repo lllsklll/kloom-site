@@ -34,7 +34,7 @@ import { url } from '../../lib/url';
           ~850px tall on a desktop, which pushes the caption a whole screen away
           from the line it belongs to. Cropping keeps quote, art and caption as
           one composition. */}
-      class="interlude-art mt-9 h-[220px] w-full object-cover sm:h-[300px] lg:h-[360px]"
+      class="interlude-art mt-9 h-[220px] w-full object-cover sm:h-[300px]"
     />
 
     <figcaption data-rise style="--d: 200ms" class="relative mx-auto -mt-10 max-w-md px-5 text-center text-xs leading-relaxed text-pretty text-neutral-500 sm:-mt-14">
@@ -50,6 +50,17 @@ import { url } from '../../lib/url';
   .interlude-art {
     mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 72%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 72%, transparent 100%);
+  }
+
+  /* On desktop the band keeps the 4:1 shape it has on a laptop (360px at 1440px wide)
+     rather than a fixed height, which thinned it to a strip on wide monitors. Capped
+     so it never grows back toward the full painting and pushes the caption away. */
+  @media (width >= 64rem) {
+    .interlude-art {
+      --band-min: 360px;
+      --band-max: 560px;
+      height: clamp(var(--band-min), 25vw, var(--band-max));
+    }
   }
 </style>
 

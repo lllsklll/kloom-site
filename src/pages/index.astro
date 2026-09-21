@@ -58,7 +58,7 @@ const steps = [
   <body class="min-h-screen overflow-x-clip bg-canvas font-sans text-neutral-900 antialiased">
     <Nav />
     <main class="px-4 pt-24 sm:pt-32">
-      <section class="mx-auto max-w-2xl text-center">
+      <section class="mx-auto max-w-2xl text-center lg:min-h-[calc(100svh-var(--hero-below))] lg:content-center">
         <a
           data-reveal
           href={SITE.appStoreURL}
@@ -93,7 +93,7 @@ const steps = [
       <!-- Scroll story: the hero phone pins to the screen and walks through Share → Save → Find. -->
       <section id="features" data-story class="relative -mx-4 h-[400svh]">
         <!-- No overflow clipping here: the intro lifts the phone above this stage. -->
-        <div class="sticky top-0 h-svh px-4">
+        <div class="sticky top-0 h-svh px-4 lg:top-(--story-shift)">
           <div class="relative mx-auto flex h-full max-w-3xl justify-center pt-24">
             <!-- On desktop the script slides this left/right with the scroll (translate + a slight swing). -->
             <div data-phone-wrap class="origin-top">
@@ -106,7 +106,7 @@ const steps = [
                 <article
                   data-step-text={i + 1}
                   data-side={i % 2 === 0 ? 'left' : 'right'}
-                  class="pointer-events-none absolute z-10 opacity-0 blur-sm transition duration-600 ease-[cubic-bezier(.2,.8,.2,1)] data-on:opacity-100 data-on:blur-none max-lg:inset-x-0 max-lg:bottom-5 max-lg:mx-auto max-lg:max-w-sm max-lg:translate-y-3 max-lg:rounded-2xl max-lg:bg-white/70 max-lg:p-4 max-lg:shadow-[inset_0_1px_0_rgb(255_255_255/1)] max-lg:backdrop-blur-xl max-lg:backdrop-saturate-200 max-lg:data-on:translate-y-0 lg:top-1/2 lg:w-[22rem] lg:-translate-y-1/2 lg:data-[side=left]:left-5 lg:data-[side=left]:[&:not([data-on])]:-translate-x-10 lg:data-[side=right]:right-5 lg:data-[side=right]:[&:not([data-on])]:translate-x-10"
+                  class="pointer-events-none absolute z-10 opacity-0 blur-sm transition duration-600 ease-[cubic-bezier(.2,.8,.2,1)] data-on:opacity-100 data-on:blur-none max-lg:inset-x-0 max-lg:bottom-5 max-lg:mx-auto max-lg:max-w-sm max-lg:translate-y-3 max-lg:rounded-2xl max-lg:bg-white/70 max-lg:p-4 max-lg:shadow-[inset_0_1px_0_rgb(255_255_255/1)] max-lg:backdrop-blur-xl max-lg:backdrop-saturate-200 max-lg:data-on:translate-y-0 lg:top-[calc(50%-var(--story-shift))] lg:w-[22rem] lg:-translate-y-1/2 lg:data-[side=left]:left-5 lg:data-[side=left]:[&:not([data-on])]:-translate-x-10 lg:data-[side=right]:right-5 lg:data-[side=right]:[&:not([data-on])]:translate-x-10"
                 >
                   <p class="text-xs font-medium tracking-wider text-neutral-500 uppercase">
                     <span class="tabular-nums">0{i + 1}</span> / 03 · {step.label}
@@ -117,8 +117,13 @@ const steps = [
               ))
             }
 
-            <!-- Progress: a thin vertical track just outside the navbar's right edge, desktop only. -->
-            <div class="absolute top-1/2 -right-8 hidden -translate-y-1/2 flex-col gap-1.5 lg:flex" aria-hidden="true">
+            <!-- Progress: a thin vertical track just outside the navbar's right edge, desktop only.
+                 Hidden until the story's first step, so it doesn't float beside the intro and hero. -->
+            <div
+              data-step-track
+              class="absolute top-[calc(50%-var(--story-shift))] -right-8 hidden -translate-y-1/2 flex-col gap-1.5 opacity-0 transition-opacity duration-500 data-on:opacity-100 motion-reduce:transition-none lg:flex"
+              aria-hidden="true"
+            >
               {steps.map((_, i) => <span data-step-dot={i + 1} class="h-5 w-0.5 rounded-full bg-neutral-300 transition-all duration-500 data-on:h-10 data-on:bg-neutral-900" />)}
             </div>
           </div>
@@ -159,7 +164,7 @@ const steps = [
     </div>
 
     <!-- Intro: links floating around the screen, before they fly into the phone. -->
-    <div data-intro-layer class="pointer-events-none fixed inset-3 z-30 sm:inset-6" aria-hidden="true">
+    <div data-intro-layer class="pointer-events-none fixed inset-3 z-30 m-auto max-h-(--intro-max-h) max-w-(--intro-max-w) sm:inset-6" aria-hidden="true">
       {
         floating.map((item, i) => (
           <div
@@ -399,6 +404,7 @@ const steps = [
         search: $('[data-search]'),
       };
       const texts = Array.from(story.querySelectorAll<HTMLElement>('[data-step-text]'));
+      const track = story.querySelector<HTMLElement>('[data-step-track]')!;
       const dots = Array.from(story.querySelectorAll<HTMLElement>('[data-step-dot]'));
       const on = (el: HTMLElement, state: boolean) => el.toggleAttribute('data-on', state);
 
@@ -429,6 +435,7 @@ const steps = [
       const show = (step: number) => {
         const g = ++gen;
         const later = (ms: number, fn: () => void) => setTimeout(() => g === gen && fn(), ms);
+        on(track, step > 0);
         dots.forEach((d) => on(d, Number(d.dataset.stepDot) === step));
 
         // Base state for this step, so scrolling back up always undoes the later ones.
