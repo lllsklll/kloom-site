@@ -1,0 +1,95 @@
+---
+// ⚠️ This copy mirrors LegalDocumentView in the app (ProfileView.swift), and the
+// App Store Description links here as the Terms of Use (EULA).
+// Change one, change the other — in the same commit.
+import V2Doc, { type DocSection } from '../layouts/V2Doc.astro';
+import { mailto } from '../data/site';
+
+// The address is never printed on the site — only behind this button.
+const emailUs = `<a class="doc-button" href="${mailto('Kloom Terms')}">Email us</a>`;
+
+const sections: DocSection[] = [
+  {
+    id: 'acceptance',
+    title: 'Acceptance',
+    paragraphs: [
+      'By using Kloom you agree to these terms. If you do not agree, please do not use the app. Your use is also subject to Apple’s Licensed Application End User License Agreement, which applies to every app on the App Store.',
+    ],
+  },
+  {
+    id: 'licence',
+    title: 'Your licence',
+    paragraphs: [
+      'You get a personal, non-transferable licence to use Kloom on the devices allowed by your Apple Account. You may not resell it, or attempt to decompile or redistribute it.',
+    ],
+  },
+  {
+    id: 'subscriptions',
+    title: 'Subscriptions',
+    paragraphs: [
+      'Kloom Pro is an auto-renewable subscription offered monthly or yearly. Payment is charged to your Apple Account at confirmation of purchase.',
+      'It renews automatically for the same period unless you cancel at least 24 hours before the current period ends, and your account is charged for renewal within 24 hours of the period end. Manage or cancel a subscription in Settings → your name → Subscriptions; deleting the app does not cancel it.',
+      'Prices are shown in your local currency before you buy and may change with notice. Refunds are handled by Apple under its own policy, not by us.',
+    ],
+  },
+  {
+    id: 'free-and-pro',
+    title: 'Free and Pro features',
+    paragraphs: [
+      'Some features are limited on the free tier. Those limits may change over time, but content you have already saved always stays accessible and exportable — a limit will never lock you out of your own links, and nothing you created is deleted if a subscription ends.',
+    ],
+  },
+  {
+    id: 'your-content',
+    title: 'Your content',
+    paragraphs: [
+      'The links, notes and images you save are yours. We claim no rights over them, and because we never receive them we cannot moderate or restore them. Keep your own backups of anything you cannot lose — the export feature exists for exactly that.',
+    ],
+  },
+  {
+    id: 'acceptable-use',
+    title: 'Acceptable use',
+    paragraphs: [
+      'Do not use Kloom to break the law, to infringe someone’s rights, or to store content you have no right to store. Saved articles are copies of third-party pages kept for your personal offline reading; redistributing them may infringe the rights of whoever wrote them.',
+    ],
+  },
+  {
+    id: 'third-party',
+    title: 'Third-party content',
+    paragraphs: [
+      'Kloom shows previews of, and links to, websites we neither own nor control. We are not responsible for what those sites contain, or for what they do with a visit from your device.',
+    ],
+  },
+  {
+    id: 'no-warranty',
+    title: 'No warranty',
+    paragraphs: [
+      'Kloom is provided “as is”, without warranties of any kind. We do not promise that saving, syncing or offline archiving will always succeed — many websites block the readers and scrapers such features rely on.',
+    ],
+  },
+  {
+    id: 'liability',
+    title: 'Limitation of liability',
+    paragraphs: [
+      'To the fullest extent the law allows, the developer is not liable for any indirect or consequential loss arising from your use of the app, including lost data. Any direct liability is limited to the amount you paid for the app in the twelve months before the claim.',
+    ],
+  },
+  {
+    id: 'governing-law',
+    title: 'Governing law',
+    paragraphs: ['These terms are governed by the laws of India.'],
+  },
+  {
+    id: 'contact',
+    title: 'Contact',
+    paragraphs: ['Questions about these terms?', emailUs],
+  },
+];
+---
+
+<V2Doc
+  title="Terms of Use"
+  description="The terms that apply to using Kloom and to Kloom Pro subscriptions."
+  updated="Last updated August 2026"
+  sections={sections}
+/>

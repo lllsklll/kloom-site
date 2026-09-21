@@ -1,0 +1,100 @@
+---
+// Floating top bar. Support goes to the support page; the rest are homepage
+// sections.
+//
+// The bar is glass, so it takes the colour of whatever scrolls under it. Over the
+// dark cards (privacy, Pro) the dark-on-light text disappeared, so a script flips
+// the bar to its inverted palette while a [data-dark] block is behind it.
+import Logo from '../Logo.astro';
+import { SITE } from '../../data/site';
+import { url } from '../../lib/url';
+
+// Absolute, so the same navbar works on the legal pages: on the homepage these
+// are still same-document links, so they smooth-scroll rather than reload.
+const links = [
+  { label: 'Features', href: `${url()}#features` },
+  { label: 'Pricing', href: `${url()}#pricing` },
+  { label: 'FAQ', href: `${url()}#faq` },
+  { label: 'Support', href: url('support.html') },
+];
+---
+
+<header data-reveal class="pointer-events-none fixed inset-x-0 top-3 z-20 px-3">
+  <div
+    data-bar
+    class="group pointer-events-auto relative isolate mx-auto flex h-14 max-w-3xl items-center gap-4 rounded-2xl bg-linear-to-b from-white/45 to-white/15 pr-2.5 pl-5 shadow-[inset_0_1px_0_rgb(255_255_255/1),inset_0_-1px_0_rgb(255_255_255/0.5),inset_0_0_24px_rgb(255_255_255/0.35)] backdrop-blur-xl backdrop-brightness-110 backdrop-saturate-200 transition-[background-color,box-shadow,--tw-gradient-from,--tw-gradient-to] duration-300 data-dark:from-neutral-900/80 data-dark:to-neutral-900/65 data-dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.35),inset_0_-1px_0_rgb(255_255_255/0.12),inset_0_0_24px_rgb(255_255_255/0.08)] data-dark:backdrop-brightness-75"
+  >
+    <!-- Reflection: a glossy top half and a diagonal streak that sweeps across on hover. -->
+    <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-2xl">
+      <span class="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-white/50 to-transparent transition-opacity duration-300 group-data-dark:opacity-40"></span>
+      <span
+        class="absolute inset-y-0 left-[6%] w-1/4 -skew-x-20 bg-linear-to-r from-transparent via-white/55 to-transparent group-hover:animate-sheen"
+      ></span>
+    </span>
+    <a href={url()} aria-label="Kloom home" class="text-neutral-900 transition-colors duration-300 group-data-dark:text-white">
+      <Logo class="h-3.5 w-auto" />
+    </a>
+    <nav aria-label="Main" class="ml-auto hidden items-center gap-0.5 md:flex">
+      {
+        links.map((l) => (
+          <a
+            href={l.href}
+            class="rounded-lg px-3 py-2 text-sm text-neutral-600 transition duration-300 hover:bg-neutral-100 hover:text-neutral-900 group-data-dark:text-white/75 group-data-dark:hover:bg-white/10 group-data-dark:hover:text-white"
+          >
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+    <a
+      href={SITE.appStoreURL}
+      class="ml-auto inline-flex h-9 items-center rounded-full bg-neutral-900 px-4 text-sm font-medium text-white transition duration-300 hover:bg-neutral-700 group-data-dark:bg-white group-data-dark:text-neutral-900 group-data-dark:hover:bg-white/85 md:ml-0"
+    >
+      Download
+    </a>
+  </div>
+</header>
+
+<script>
+  // Flip the glass bar to its inverted palette while a dark block sits behind it.
+  // Overlap is measured against the bar's middle band, so a card's rounded corner
+  // doesn't trigger the change a few pixels early.
+  const bar = document.querySelector<HTMLElement>('[data-bar]');
+  const darks = Array.from(document.querySelectorAll<HTMLElement>('[data-dark]'));
+
+  if (bar && darks.length) {
+    let queued = false;
+
+    // The phone is faded out during the intro while still occupying its box, so a
+    // hidden dark surface must not flip the bar (white text on the light page).
+    const visible = (el: HTMLElement) => {
+      const host = (el.closest('[data-phone]') as HTMLElement | null) ?? el;
+      return parseFloat(getComputedStyle(host).opacity || '1') > 0.5;
+    };
+
+    const update = () => {
+      queued = false;
+      const r = bar.getBoundingClientRect();
+      const over = darks.some((d) => {
+        const b = d.getBoundingClientRect();
+        if (b.top >= r.bottom - 8 || b.bottom <= r.top + 8 || !visible(d)) return false;
+        // Any real overlap counts: the phone slides in from one side and its dark
+        // edge alone would leave the nav links sitting on black. The bar's dark
+        // state is a filled dark glass, so backing the whole bar reads deliberate.
+        const covered = Math.min(b.right, r.right) - Math.max(b.left, r.left);
+        return covered > 24;
+      });
+      bar.toggleAttribute('data-dark', over);
+    };
+
+    const queue = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    };
+
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    update();
+  }
+</script>

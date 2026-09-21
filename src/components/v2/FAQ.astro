@@ -1,0 +1,140 @@
+---
+// FAQ for v2. Same answers as the v1 section and the support page — every claim
+// is something the app actually does (see Shared/AppConstants.swift for the
+// limits and Shared/DataController.swift for Cloud Sync).
+//
+// Native <details>/<summary>, so it opens with no JavaScript and stays keyboard
+// and screen-reader friendly.
+import { LIMITS } from '../../data/site';
+import { url } from '../../lib/url';
+
+const faqs = [
+  {
+    q: 'Do I need an account?',
+    a: 'No. Kloom has no sign-up and no login. Open it and start saving.',
+  },
+  {
+    q: 'How do I save a link?',
+    a: 'Tap Share in any app — Safari, YouTube, Instagram, WhatsApp — then choose Save to Kloom. You can add a note and pick a space before it saves.',
+  },
+  {
+    q: 'Where are my links stored?',
+    a: 'On your iPhone. With Cloud Sync on they also sync through your own private iCloud. Nothing passes through a Kloom server, because there isn’t one.',
+  },
+  {
+    q: 'Does it sync between my devices?',
+    a: 'Yes, through your own iCloud, and you can turn Cloud Sync off in Settings. Sync is decided when the app launches, so a change applies the next time you open Kloom.',
+  },
+  {
+    q: 'Can I read articles offline?',
+    a: 'Yes. Kloom can keep a clean, readable copy of an article that opens without a connection. Some sites, like X and Instagram, block this.',
+  },
+  {
+    q: 'What does Pro add?',
+    a: `Unlimited spaces (Free includes ${LIMITS.freeSpaces}), folders inside spaces, export to HTML bookmarks or CSV, and a ${LIMITS.trashDaysPro}-day Trash instead of ${LIMITS.trashDaysFree}.`,
+  },
+  {
+    q: 'If I stop Pro, do I lose anything?',
+    a: 'No. Spaces and folders you’ve made stay exactly where they are. You just can’t create more than the free limits allow.',
+  },
+];
+---
+
+<!-- A white band, like the copy section, so the page alternates instead of running
+     one shade of off-white top to bottom. scroll-mt keeps the heading clear of the
+     fixed navbar when the nav's FAQ link jumps here. -->
+<section id="faq" class="band-white -mx-4 scroll-mt-28">
+  <div class="mx-auto max-w-3xl px-5 py-24 sm:py-32">
+    <div class="text-center">
+    <p data-rise class="text-xs font-medium tracking-wider text-neutral-500 uppercase">FAQ</p>
+    <h2 data-rise style="--d: 80ms" class="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
+      Questions, answered.
+    </h2>
+      <p data-rise style="--d: 160ms" class="mt-5 text-base text-neutral-600">
+        Something else? <a href={url('support.html')} class="text-neutral-900 underline decoration-neutral-300 underline-offset-4 transition hover:decoration-neutral-900">Visit Support</a>.
+      </p>
+    </div>
+
+    <div data-rise style="--d: 220ms" class="mx-auto mt-10 max-w-2xl">
+    {
+      faqs.map((f, i) => (
+        <details class="group border-neutral-200 not-first:border-t" open={i === 0}>
+          <summary class="flex cursor-pointer list-none items-center gap-4 py-5 text-left text-base font-medium transition hover:text-neutral-600 [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 text-pretty">{f.q}</span>
+            {/* The plus rotates 45° into an × when the row opens. */}
+            <span
+              class="relative size-4 shrink-0 text-neutral-400 transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-open:rotate-45"
+              aria-hidden="true"
+            >
+              <span class="absolute top-1/2 left-0 h-px w-4 -translate-y-1/2 bg-current" />
+              <span class="absolute top-0 left-1/2 h-4 w-px -translate-x-1/2 bg-current" />
+            </span>
+          </summary>
+          <div data-answer class="grid transition-[grid-template-rows] duration-400 ease-[cubic-bezier(.2,.8,.2,1)]">
+            <div class="overflow-hidden">
+              <p class="pb-5 text-sm leading-relaxed text-pretty text-neutral-600 sm:text-[15px]">{f.a}</p>
+            </div>
+          </div>
+        </details>
+      ))
+    }
+    </div>
+  </div>
+</section>
+
+<script>
+  // Reveal the block as it scrolls into view, like the sections above it.
+  const root = document.querySelector('#faq');
+  if (root) {
+    // Open and close on a height animation. <details> snaps by default, so the
+    // click is intercepted: opening flips it open and then grows the answer,
+    // closing shrinks first and flips it shut when the transition lands. With no
+    // JS the element still works — it just opens instantly, as <details> does.
+    const calm = matchMedia('(prefers-reduced-motion: reduce)');
+    const DURATION = 400;
+
+    root.querySelectorAll<HTMLDetailsElement>('details').forEach((d) => {
+      const answer = d.querySelector<HTMLElement>('[data-answer]');
+      const summary = d.querySelector('summary');
+      if (!answer || !summary) return;
+
+      answer.style.gridTemplateRows = d.open ? '1fr' : '0fr';
+      let closing = 0;
+
+      summary.addEventListener('click', (e) => {
+        e.preventDefault();
+        clearTimeout(closing);
+
+        if (calm.matches) {
+          d.open = !d.open;
+          answer.style.gridTemplateRows = d.open ? '1fr' : '0fr';
+          return;
+        }
+
+        if (!d.open) {
+          d.open = true;
+          // One frame at 0fr first, or there is nothing to animate from.
+          requestAnimationFrame(() => {
+            answer.style.gridTemplateRows = '1fr';
+          });
+        } else {
+          answer.style.gridTemplateRows = '0fr';
+          closing = window.setTimeout(() => {
+            d.open = false;
+          }, DURATION);
+        }
+      });
+    });
+
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.setAttribute('data-on', '');
+          io.unobserve(e.target);
+        }),
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    root.querySelectorAll('[data-rise]').forEach((el) => io.observe(el));
+  }
+</script>

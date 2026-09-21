@@ -1,0 +1,194 @@
+---
+// Pricing for v2. Same facts as the v1 section and the app's paywall: saving and
+// reading are free with no link limit, Pro only adds room to organise. App Review
+// checks marketing claims, so nothing here may promise more than the app gives.
+import { LIMITS, PRICING, SITE } from '../../data/site';
+import { url } from '../../lib/url';
+
+const free = [
+  'Unlimited links',
+  'Save from any app with Share',
+  'Notes and images on links',
+  'Offline reader',
+  'Pinning and search',
+  `Up to ${LIMITS.freeSpaces} spaces`,
+  `${LIMITS.trashDaysFree}-day Trash`,
+];
+
+const pro = [
+  'Everything in Free',
+  'Unlimited spaces',
+  'Folders inside spaces',
+  'Export to HTML bookmarks or CSV',
+  `${LIMITS.trashDaysPro}-day Trash`,
+];
+---
+
+<!-- scroll-mt keeps the heading clear of the fixed navbar when the nav's Pricing link jumps here. -->
+<section id="pricing" data-pricing class="mx-auto max-w-3xl scroll-mt-28 px-1 pb-32 sm:px-0">
+  <div class="px-4 text-center sm:px-5">
+    <p data-rise class="text-xs font-medium tracking-wider text-neutral-500 uppercase">Pricing</p>
+    <h2 data-rise style="--d: 80ms" class="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
+      Free to start. Pro when you need more.
+    </h2>
+    <p data-rise style="--d: 160ms" class="mx-auto mt-5 max-w-lg text-base leading-relaxed text-pretty text-neutral-600">
+      Saving, reading and searching are free, with no limit on links. Pro adds room to organise.
+    </p>
+  </div>
+
+  <!-- Billing switch. The pill is positioned from the active button's box, so it
+       follows whatever width the labels end up with. -->
+  <div data-rise style="--d: 220ms" class="mt-10 flex justify-center">
+    <div
+      role="group"
+      aria-label="Billing period"
+      class="relative flex rounded-full bg-white p-1 ring-1 ring-neutral-200/70"
+    >
+      <span data-pill aria-hidden="true" class="absolute top-1 bottom-1 left-0 rounded-full bg-neutral-900"></span>
+      <button
+        type="button"
+        data-period="yearly"
+        aria-pressed="true"
+        class="relative rounded-full px-5 py-2 text-sm font-medium text-neutral-500 transition-colors duration-300 aria-pressed:text-white"
+      >
+        Yearly
+      </button>
+      <button
+        type="button"
+        data-period="monthly"
+        aria-pressed="false"
+        class="relative rounded-full px-5 py-2 text-sm font-medium text-neutral-500 transition-colors duration-300 aria-pressed:text-white"
+      >
+        Monthly
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-6 grid gap-3 sm:grid-cols-2">
+    <article data-rise class="flex flex-col rounded-3xl bg-white p-6 sm:p-8">
+      <p class="text-sm font-semibold text-neutral-500">Free</p>
+      <p class="mt-6 text-5xl font-semibold tracking-tight tabular-nums">$0</p>
+      <p class="mt-2 min-h-10 text-sm text-neutral-500">Everything you need to save and read.</p>
+      <a
+        href={SITE.appStoreURL}
+        class="mt-6 inline-flex h-12 items-center justify-center rounded-full border border-neutral-300 px-6 text-base font-medium text-neutral-900 transition hover:bg-neutral-100"
+      >
+        Download Kloom
+      </a>
+      <ul class="mt-7 grid gap-3 border-t border-neutral-200 pt-7 text-sm">
+        {
+          free.map((f) => (
+            <li class="flex items-center gap-2.5 text-neutral-600">
+              <svg viewBox="0 0 16 16" class="size-4 flex-none fill-none stroke-neutral-400 stroke-[2.25]" aria-hidden="true">
+                <path d="M3 8.5l3.2 3L13 4.5" />
+              </svg>
+              {f}
+            </li>
+          ))
+        }
+      </ul>
+    </article>
+
+    <article
+      data-rise
+      data-dark
+      style="--d: 90ms"
+      class="relative isolate flex flex-col overflow-hidden rounded-3xl bg-neutral-900 p-6 text-white sm:p-8"
+    >
+      <!-- Same faint grid as the closing card, fading out toward the edges, so every
+           dark surface on the page reads as one material. -->
+      <div
+        class="pointer-events-none absolute inset-0 -z-10 opacity-60 [background-image:linear-gradient(rgb(255_255_255/0.07)_1px,transparent_1px),linear-gradient(90deg,rgb(255_255_255/0.07)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_75%_90%_at_72%_0%,#000_15%,transparent_78%)]"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -top-24 -right-16 -z-10 size-72 rounded-full bg-linear-to-br from-sky-400/25 via-indigo-400/15 to-transparent blur-2xl"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-semibold text-white/60">Pro</p>
+        <span class="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold tracking-widest">IN-APP</span>
+      </div>
+      <p class="mt-6 flex items-baseline gap-1.5">
+        <span data-amount class="text-5xl font-semibold tracking-tight tabular-nums">{PRICING.yearly.price}</span>
+        <span data-per class="text-base text-white/50">{PRICING.yearly.period}</span>
+      </p>
+      <p data-note class="mt-2 min-h-10 text-sm text-white/60">{PRICING.yearly.note}</p>
+      <a
+        href={SITE.appStoreURL}
+        class="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-base font-medium text-neutral-900 transition hover:bg-white/85"
+      >
+        Get Kloom, upgrade in the app
+      </a>
+      <ul class="mt-7 grid gap-3 border-t border-white/15 pt-7 text-sm">
+        {
+          pro.map((f) => (
+            <li class="flex items-center gap-2.5 text-white/80">
+              <svg viewBox="0 0 16 16" class="size-4 flex-none fill-none stroke-emerald-400 stroke-[2.25]" aria-hidden="true">
+                <path d="M3 8.5l3.2 3L13 4.5" />
+              </svg>
+              {f}
+            </li>
+          ))
+        }
+      </ul>
+    </article>
+  </div>
+
+  <!-- App Review looks for the subscription's terms wherever it is sold, so the
+       renewal line and a link to the Terms sit right under the plans. -->
+  <p data-rise class="mx-auto mt-8 max-w-[62ch] px-4 text-center text-[13px] leading-relaxed text-pretty text-neutral-500 sm:px-0">
+    Prices in USD. The App Store charges your local price. Pro renews automatically until you cancel it in your Apple
+    account settings — see the <a href={url('terms.html')} class="text-neutral-900 underline decoration-neutral-300 underline-offset-4 transition hover:decoration-neutral-900">Terms of Use</a>.
+  </p>
+</section>
+
+<script>
+  import { PRICING } from '../../data/site';
+
+  const root = document.querySelector<HTMLElement>('[data-pricing]');
+  if (root) {
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-period]'));
+    const pill = root.querySelector<HTMLElement>('[data-pill]')!;
+    const amount = root.querySelector<HTMLElement>('[data-amount]')!;
+    const per = root.querySelector<HTMLElement>('[data-per]')!;
+    const note = root.querySelector<HTMLElement>('[data-note]')!;
+
+    // The pill has no layout of its own, so it copies the active button's box.
+    // The first placement is silent; later ones slide.
+    const place = (b: HTMLElement, animate: boolean) => {
+      pill.style.transition = animate ? 'transform .45s cubic-bezier(.2,.8,.2,1), width .45s cubic-bezier(.2,.8,.2,1)' : 'none';
+      pill.style.width = `${b.offsetWidth}px`;
+      pill.style.transform = `translateX(${b.offsetLeft}px)`;
+    };
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        const period = b.dataset.period as 'yearly' | 'monthly';
+        buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        place(b, true);
+        amount.textContent = PRICING[period].price;
+        per.textContent = PRICING[period].period;
+        note.textContent = PRICING[period].note;
+      }),
+    );
+
+    place(buttons[0], false);
+    // Font swaps and window resizes change the button widths under the pill.
+    addEventListener('resize', () => place(buttons.find((b) => b.getAttribute('aria-pressed') === 'true')!, false));
+
+    // Same reveal-on-scroll as the section above it.
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.setAttribute('data-on', '');
+          io.unobserve(e.target);
+        }),
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    root.querySelectorAll('[data-rise]').forEach((el) => io.observe(el));
+  }
+</script>

@@ -1,0 +1,83 @@
+---
+// One saved link inside the phone's Kloom list — the app's compact card
+// (LinkRowView.compactBody): a 32pt thumb, a one-line title, then a single meta
+// row of NEW badge · host · age, with the copy button on the right. Colours follow
+// the app's dark palette (card = appGray(0.1) = #1a1a1a, radius 14).
+//
+// It collapses smoothly when the story filters the list (data-hidden), via the
+// grid-rows 1fr → 0fr trick.
+import type { Item } from './items';
+
+type Props = { item: Item; isNew?: boolean; hidden?: boolean; calm?: boolean };
+const { item, isNew = false, hidden = false, calm = false } = Astro.props;
+---
+
+<div
+  data-row-item
+  data-tag={item.tag}
+  data-title={item.title.toLowerCase()}
+  data-hidden={hidden ? '' : undefined}
+  data-calm={calm ? '' : undefined}
+  class="grid [grid-template-rows:1fr] transition-[grid-template-rows,opacity] duration-500 ease-out data-hidden:[grid-template-rows:0fr] data-hidden:opacity-0"
+>
+  <div class="min-h-0 overflow-hidden">
+    <div class="pb-1.5">
+      <div class="flex items-center gap-2.5 rounded-[14px] bg-[#1a1a1a] p-2.5">
+        {
+          item.kind === 'video' && (
+            <span class="grid size-8 shrink-0 place-items-center rounded-[10px] bg-[#2a2a2a]">
+              <svg viewBox="0 0 12 14" class="ml-0.5 size-2.5 fill-white/90"><path d="M0 0v14l12-7z" /></svg>
+            </span>
+          )
+        }
+        {item.kind === 'shop' && <span class:list={['size-8 shrink-0 rounded-[10px] bg-linear-to-br', item.grad]} />}
+        {
+          item.kind === 'tweet' && (
+            <span class:list={['grid size-8 shrink-0 place-items-center rounded-[10px] text-[10px] font-semibold text-white', item.avatar]}>{item.initials}</span>
+          )
+        }
+        {
+          /* The app's fallback thumb: the host's first letter on a flat plate. */
+          item.kind === 'article' && (
+            <span class="grid size-8 shrink-0 place-items-center rounded-[10px] bg-[#2a2a2a] text-[13px] font-medium text-neutral-400">
+              {item.host.charAt(0).toUpperCase()}
+            </span>
+          )
+        }
+        {
+          item.kind === 'music' && (
+            <span class="grid size-8 shrink-0 place-items-center rounded-[10px] bg-emerald-600">
+              <svg viewBox="0 0 16 14" class="size-3.5 fill-white">
+                <rect x="0" y="5" width="3" height="9" rx="1" />
+                <rect x="4.5" y="1" width="3" height="13" rx="1" />
+                <rect x="9" y="7" width="3" height="7" rx="1" />
+                <rect x="13" y="3" width="3" height="11" rx="1" />
+              </svg>
+            </span>
+          )
+        }
+        {
+          item.kind === 'place' && (
+            <span class="grid size-8 shrink-0 place-items-center rounded-[10px] bg-[#2a2a2a]">
+              <svg viewBox="0 0 16 20" class="size-3.5 fill-sky-400"><path d="M8 0a8 8 0 0 0-8 8c0 6 8 12 8 12s8-6 8-12a8 8 0 0 0-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" /></svg>
+            </span>
+          )
+        }
+        <div class="min-w-0 flex-1 text-left">
+          <p class="truncate text-[12.5px] font-semibold text-neutral-100">{item.title}</p>
+          <p class="mt-0.5 flex items-center gap-1 truncate text-[10.5px] text-neutral-500">
+            {isNew && <span class="rounded-full bg-white px-1.5 text-[8.5px] font-bold tracking-wide text-neutral-900">NEW</span>}
+            <span class="truncate">{item.host}</span>
+            <span aria-hidden="true">•</span>
+            <span>{item.age ?? 'now'}</span>
+          </p>
+        </div>
+        <!-- Copy button: the app puts a one-tap "copy link" on every card. -->
+        <svg viewBox="0 0 20 20" class="size-3.5 shrink-0 fill-none stroke-neutral-600 stroke-[1.75]" aria-hidden="true">
+          <rect x="7" y="7" width="10" height="10" rx="2.5" />
+          <path d="M13 4.5A2.5 2.5 0 0 0 10.5 2h-6A2.5 2.5 0 0 0 2 4.5v6A2.5 2.5 0 0 0 4.5 13" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+---
+// A breath between the feature sections: the quote that explains why an app like
+// this exists, set in the intro's serif, with its source under the painting — the
+// same quote-then-citation pairing the preloader uses.
+//
+// Source: Herbert A. Simon, "Designing Organizations for an Information-Rich
+// World", in Computers, Communication, and the Public Interest (Johns Hopkins
+// Press, 1971), pp. 37–52. The line is a direct quote from that essay.
+import { url } from '../../lib/url';
+---
+
+<section class="-mx-4 overflow-hidden py-20 sm:py-24">
+  <figure>
+    <div class="mx-auto max-w-4xl px-5">
+    <blockquote
+      data-rise
+      class="mx-auto max-w-[22ch] text-center font-['Times_New_Roman',Times,serif] text-[30px] leading-[1.1] tracking-[-0.02em] text-balance text-neutral-900 sm:max-w-[26ch] sm:text-[42px]"
+    >
+      “A wealth of information creates a poverty of attention.”
+      </blockquote>
+    </div>
+
+    <!-- Full width: the painting runs edge to edge and only fades top and bottom. -->
+    <img
+      data-rise
+      style="--d: 120ms"
+      src={url('valley.jpg')}
+      alt="A soft painting of a wide valley at sunset, a river running through it"
+      width="1800"
+      height="1007"
+      loading="lazy"
+      decoding="async"
+      {/* A cropped band, not the full 16:9: at its natural ratio the painting is
+          ~850px tall on a desktop, which pushes the caption a whole screen away
+          from the line it belongs to. Cropping keeps quote, art and caption as
+          one composition. */}
+      class="interlude-art mt-9 h-[220px] w-full object-cover sm:h-[300px]"
+    />
+
+    <figcaption data-rise style="--d: 200ms" class="relative mx-auto -mt-10 max-w-md px-5 text-center text-xs leading-relaxed text-pretty text-neutral-500 sm:-mt-14">
+      Herbert A. Simon, “Designing Organizations for an Information-Rich World,”
+      <i>Computers, Communication, and the Public Interest</i>, 1971.
+    </figcaption>
+  </figure>
+</section>
+
+<style>
+  /* Edge to edge horizontally; only the top and bottom dissolve into the page,
+     so the painting never ends on a hard line above or below. */
+  .interlude-art {
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 72%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 72%, transparent 100%);
+  }
+
+  /* On desktop the band keeps the 4:1 shape it has on a laptop (360px at 1440px wide)
+     rather than a fixed height, which thinned it to a strip on wide monitors. Capped
+     so it never grows back toward the full painting and pushes the caption away. */
+  @media (width >= 64rem) {
+    .interlude-art {
+      --band-min: 360px;
+      --band-max: 560px;
+      height: clamp(var(--band-min), 25vw, var(--band-max));
+    }
+  }
+</style>
+
+<script>
+  const section = document.querySelector('.interlude-art')?.closest('section');
+  if (section) {
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.setAttribute('data-on', '');
+          io.unobserve(e.target);
+        }),
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    section.querySelectorAll('[data-rise]').forEach((el) => io.observe(el));
+  }
+</script>

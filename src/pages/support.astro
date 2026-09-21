@@ -1,0 +1,241 @@
+---
+// The App Store listing's Support URL points at /support.html — keep this page.
+import V2Layout from '../layouts/V2Layout.astro';
+import { LIMITS, SITE, mailto as mailtoFor } from '../data/site';
+import { url } from '../lib/url';
+
+const mailto = mailtoFor('Kloom Support');
+
+const quick = [
+  {
+    icon: 'M3 6.5h18v11H3zM3 7l9 6 9-6',
+    title: 'Email support',
+    desc: 'A real inbox, read by the person who builds Kloom.',
+    href: mailto,
+  },
+  {
+    icon: 'M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4',
+    title: 'Manage your subscription',
+    desc: 'Change or cancel Pro in your Apple account.',
+    href: SITE.manageSubscriptionsURL,
+  },
+  {
+    icon: 'M12 3l7 3v5.5c0 4-3 7.6-7 9-4-1.4-7-5-7-9V6z',
+    title: 'Privacy policy',
+    desc: 'What Kloom stores, and why it collects nothing.',
+    href: url('privacy.html'),
+  },
+] as const;
+
+const groups = [
+  {
+    title: 'Getting started',
+    desc: 'Saving links, spaces and folders.',
+    items: [
+      {
+        q: 'How do I save a link?',
+        a: 'Open the Share Sheet in any app — Safari, YouTube, X, WhatsApp — and tap Kloom. You can add a note and choose a space before saving, or just save and move on. The link appears as a preview card with its title, site and icon.',
+      },
+      {
+        q: 'Kloom isn’t in my Share Sheet',
+        a: 'Open the Share Sheet, scroll the app row to the end and tap <b>More</b>, then <b>Edit</b>. Turn Kloom on and drag it up the list. iOS sometimes needs a minute after installing before extensions appear.',
+      },
+      {
+        q: 'What are spaces?',
+        a: 'Spaces keep groups of links apart — Personal, Work, Reading. Tap a tab at the top of the home screen to switch, or <b>All</b> to see everything at once. Add, rename and reorder them from the profile screen → Spaces.',
+      },
+      {
+        q: 'What’s the difference between a space and a folder?',
+        a: 'A folder lives <i>inside</i> a space and gathers related links so the space stays tidy. A link in a folder leaves the space’s main list. Long-press a card and choose <b>Add to Folder</b>, or select several cards at once.',
+      },
+    ],
+  },
+  {
+    title: 'Reading and organising',
+    desc: 'Offline copies, previews and Trash.',
+    items: [
+      {
+        q: 'Offline reading doesn’t work on some links',
+        a: 'Kloom saves a clean, readable copy of an <i>article</i>. Sites that block readers and scrapers — X, Instagram, Reddit, most paywalled news — can’t be archived, and the app says so instead of saving a broken copy. Video and shopping pages have no article to extract either.',
+      },
+      {
+        q: 'A card shows only the site name, no image or description',
+        a: 'That link’s site didn’t publish preview data, or blocks it. The title, host and icon always work; the image and description are a bonus when the site offers them. You can attach your own image and a note to any card.',
+      },
+      {
+        q: 'I deleted a link by mistake',
+        a: `It isn’t gone. Deleted links wait in <b>Trash</b> (profile screen → Trash), where you can recover them — ${LIMITS.trashDaysFree} days on the free tier, ${LIMITS.trashDaysPro} days with Pro.`,
+      },
+      {
+        q: 'A link I saved in the Share Sheet isn’t showing in the app',
+        a: 'If the app was already open in the background, close and reopen it.',
+      },
+    ],
+  },
+  {
+    title: 'Sync, data and Pro',
+    desc: 'Where your links live, and what Pro adds.',
+    items: [
+      {
+        q: 'Where is my data stored?',
+        a: `On your device. With Cloud Sync on, it also syncs through your own private iCloud. There is no Kloom account and no Kloom server — see the <a href="${url('privacy.html')}">privacy policy</a>.`,
+      },
+      {
+        q: 'I changed the Cloud Sync setting and nothing happened',
+        a: 'Sync is decided when the app launches, so the change applies the next time you open Kloom. Close it fully and reopen.',
+      },
+      {
+        q: 'Can I get my links out?',
+        a: 'Yes — Pro includes <b>Export links</b>, which writes an HTML bookmarks file (imports into Chrome, Safari, Pocket, Raindrop) or a CSV for Numbers, Excel or Notion. Your links are never locked in.',
+      },
+      {
+        q: 'What does Pro unlock?',
+        a: `Unlimited spaces, folders, link export and ${LIMITS.trashDaysPro}-day trash recovery. Saving links, notes, images, pinning, search and offline reading are free and always will be.`,
+      },
+      {
+        q: 'How do I cancel or restore a subscription?',
+        a: `Cancel in Settings → your name → Subscriptions on your iPhone; deleting the app doesn’t cancel it. If you reinstall or switch device, tap <b>Restore</b> on the Pro screen to bring your subscription back.`,
+      },
+    ],
+  },
+];
+---
+
+<V2Layout
+  title="Support — Kloom"
+  description="Help with Kloom: saving links, spaces, folders, offline reading, sync, subscriptions."
+>
+  <section class="mx-auto max-w-3xl px-5 text-center">
+    <p class="text-xs font-medium tracking-wider text-neutral-500 uppercase">Support</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight text-balance sm:text-6xl">How can we help?</h1>
+    <p class="mx-auto mt-5 max-w-md text-base leading-relaxed text-pretty text-neutral-600">
+      Answers to the common questions — and a real inbox if yours isn’t here.
+    </p>
+  </section>
+
+  <section class="mx-auto mt-12 grid max-w-3xl gap-3 px-1 sm:grid-cols-3 sm:px-0" aria-label="Quick links">
+    {
+      quick.map((c) => (
+        <a
+          href={c.href}
+          class="group relative rounded-3xl bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgb(0_0_0/0.06)]"
+        >
+          <span class="grid size-10 place-items-center rounded-xl bg-stone-100 text-neutral-900" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="size-5 fill-none stroke-current stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]">
+              <path d={c.icon} />
+            </svg>
+          </span>
+          <span class="mt-5 block text-base font-semibold tracking-tight">{c.title}</span>
+          <span class="mt-1.5 block text-sm leading-relaxed text-pretty text-neutral-600">{c.desc}</span>
+          <svg
+            viewBox="0 0 16 16"
+            class="absolute top-6 right-6 size-3.5 fill-none stroke-neutral-400 stroke-[1.75] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:stroke-neutral-900"
+            aria-hidden="true"
+          >
+            <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
+          </svg>
+        </a>
+      ))
+    }
+  </section>
+
+  {
+    groups.map((g, gi) => (
+      <section class="mx-auto mt-20 max-w-3xl px-5 sm:mt-24">
+        <div class="text-center">
+          <p class="text-xs font-medium tracking-wider text-neutral-500 uppercase">
+            {g.title} <span class="tabular-nums">{String(g.items.length).padStart(2, '0')}</span>
+          </p>
+          <h2 class="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">{g.desc}</h2>
+        </div>
+
+        <div class="mx-auto mt-8 max-w-2xl">
+          {g.items.map((item, i) => (
+            <details class="group border-neutral-200 not-first:border-t" open={gi === 0 && i === 0}>
+              <summary class="flex cursor-pointer list-none items-center gap-4 py-5 text-left text-base font-medium transition hover:text-neutral-600 [&::-webkit-details-marker]:hidden">
+                <span class="flex-1 text-pretty">{item.q}</span>
+                <span
+                  class="relative size-4 shrink-0 text-neutral-400 transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-open:rotate-45"
+                  aria-hidden="true"
+                >
+                  <span class="absolute top-1/2 left-0 h-px w-4 -translate-y-1/2 bg-current" />
+                  <span class="absolute top-0 left-1/2 h-4 w-px -translate-x-1/2 bg-current" />
+                </span>
+              </summary>
+              <div data-answer class="grid transition-[grid-template-rows] duration-400 ease-[cubic-bezier(.2,.8,.2,1)]">
+                <div class="overflow-hidden">
+                  <p class="pb-5 text-sm leading-relaxed text-pretty text-neutral-600 sm:text-[15px]" set:html={item.a} />
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="mx-auto mt-24 max-w-3xl px-1 pb-32 sm:px-0">
+    <div
+      data-dark
+      class="relative isolate overflow-hidden rounded-[32px] bg-neutral-900 px-6 py-14 text-center text-white sm:px-10 sm:py-16"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 -z-10 opacity-60 [background-image:linear-gradient(rgb(255_255_255/0.07)_1px,transparent_1px),linear-gradient(90deg,rgb(255_255_255/0.07)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_75%_90%_at_72%_0%,#000_15%,transparent_78%)]"
+        aria-hidden="true"
+      >
+      </div>
+      <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Still stuck?</h2>
+      <p class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-pretty text-white/70 sm:text-base">
+        Tell us what happened, which iPhone and iOS version you’re on, and the link involved if it’s about one. Bug
+        reports and feature ideas are both welcome.
+      </p>
+      <a
+        href={mailto}
+        class="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-medium text-neutral-900 transition hover:bg-white/85"
+      >
+        <svg viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-[1.75]" aria-hidden="true">
+          <path d="M3 6.5h18v11H3zM3 7l9 6 9-6" />
+        </svg>
+        Email us
+      </a>
+    </div>
+  </section>
+</V2Layout>
+
+<script>
+  // Same height animation as the homepage FAQ: <details> snaps by default.
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+  const DURATION = 400;
+
+  document.querySelectorAll<HTMLDetailsElement>('details').forEach((d) => {
+    const answer = d.querySelector<HTMLElement>('[data-answer]');
+    const summary = d.querySelector('summary');
+    if (!answer || !summary) return;
+
+    answer.style.gridTemplateRows = d.open ? '1fr' : '0fr';
+    let closing = 0;
+
+    summary.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearTimeout(closing);
+
+      if (calm.matches) {
+        d.open = !d.open;
+        answer.style.gridTemplateRows = d.open ? '1fr' : '0fr';
+        return;
+      }
+
+      if (!d.open) {
+        d.open = true;
+        requestAnimationFrame(() => {
+          answer.style.gridTemplateRows = '1fr';
+        });
+      } else {
+        answer.style.gridTemplateRows = '0fr';
+        closing = window.setTimeout(() => {
+          d.open = false;
+        }, DURATION);
+      }
+    });
+  });
+</script>

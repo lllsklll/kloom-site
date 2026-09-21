@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+
+@theme {
+  /* Page canvas: a warm off-white, one source of truth for <body> and the preloader
+     backdrop so the intro never shows a seam against the page. */
+  --color-canvas: #f6f3ed;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-sheen: sheen 1.1s cubic-bezier(.4, 0, .2, 1);
+
+  @keyframes sheen {
+    from { translate: -140% 0; }
+    to { translate: 420% 0; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+}
+
+/* Everything on the first screen below the hero copy: main's top padding (pt-32),
+   the story stage's top padding (pt-24) and the part of the 620px phone that shows
+   (380px, a little over half). The hero fills the rest, so on tall monitors the copy
+   centres and the phone only peeks in, instead of sitting fully on screen. On a
+   laptop the copy is taller than this minimum, so its layout is unchanged. */
+:root {
+  --hero-below: calc(8rem + 6rem + 380px);
+  /* How far the pinned story stage drops so the 620px phone (which sits 6rem below
+     the stage top, clear of the navbar) lands in the middle of the screen. Zero on
+     short screens, where the phone already fills the height. Only `top` moves, so
+     the phone's resting place under the hero, and --hero-below, stay the same. */
+  --story-shift: max(0px, calc((100svh - 620px) / 2 - 6rem));
+  /* The intro's floating cards are placed as fractions of their layer. Past a laptop
+     sized screen the layer stops growing and stays centred, so on big monitors the
+     cards gather round the quote instead of drifting off into the corners. */
+  --intro-max-w: 1400px;
+  --intro-max-h: 920px;
+}
+
+/* A white band that dissolves into the page instead of meeting it on a line.
+   The fade lives in the band's own background, so there are no extra elements and
+   the edges stay soft at any section height. */
+.band-white {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-canvas) 0,
+    #fff 120px,
+    #fff calc(100% - 120px),
+    var(--color-canvas) 100%
+  );
+}
+
+@media (width >= 40rem) {
+  .band-white {
+    background-image: linear-gradient(
+      to bottom,
+      var(--color-canvas) 0,
+      #fff 160px,
+      #fff calc(100% - 160px),
+      var(--color-canvas) 100%
+    );
+  }
+}
+
+/* In-page links (the navbar, "See how it works", the footer) glide to their
+   section instead of jumping. Each target carries its own scroll-mt so it lands
+   clear of the fixed navbar. Honoured only when motion is welcome; the intro's
+   own reset to the top passes behavior: 'instant' so it stays a jump. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* The intro hides these until it reveals them. An inline script adds .intro only
+   when motion is allowed, so with no JS or reduced motion the page just shows. */
+.intro [data-reveal],
+.intro [data-phone] { opacity: 0; }
+html:not(.intro) [data-intro-layer] { display: none; }
+html:not(.intro) [data-preloader] { display: none; }
+
+/* Scroll reveal for sections below the story. Hidden only when JS is running (.js is
+   set in <head>) and motion is allowed, so content never goes missing. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-rise] {
+    transition:
+      opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+      translate 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+      filter 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: var(--d, 0ms);
+  }
+  .js [data-rise]:not([data-on]) {
+    opacity: 0;
+    translate: 0 28px;
+    filter: blur(6px);
+  }
+}

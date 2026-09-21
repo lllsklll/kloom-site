@@ -1,0 +1,103 @@
+---
+// ⚠️ This copy mirrors LegalDocumentView in the app (ProfileView.swift).
+// Change one, change the other — in the same commit.
+import V2Doc, { type DocSection } from '../layouts/V2Doc.astro';
+import { mailto, newsletterEnabled } from '../data/site';
+
+// The address is never printed on the site — only behind this button.
+const emailUs = `<a class="doc-button" href="${mailto('Kloom Privacy')}">Email us</a>`;
+
+// While the newsletter is on, the website collects one thing (an email address,
+// by choice), so "What we collect" is scoped to the app and a website section is
+// added. ⚠️ Mirror this in the app's LegalDocumentView in the next release.
+const whatWeCollect = newsletterEnabled
+  ? 'Nothing through the app. It has no sign-up, no profile and no login, so it never sends us your name, email address or any identifier. We run no analytics, no advertising and no third-party tracking SDKs.'
+  : 'Nothing. There is no sign-up, no profile and no login, so we never receive your name, email address or any identifier. We run no analytics, no advertising and no third-party tracking SDKs.';
+
+const websiteSection: DocSection[] = newsletterEnabled
+  ? [
+      {
+        id: 'website',
+        title: 'This website and the newsletter',
+        paragraphs: [
+          'This website has no analytics, no cookies and no trackers.',
+          'If you choose to join the Kloom newsletter, you give us your email address. It is stored by our newsletter provider, Buttondown, and used only to send you news about Kloom and new posts from this site. We don’t track whether you open or click the emails, and we never sell or share your address.',
+          'Every email has an unsubscribe link, which stops all emails straight away. To have your address deleted entirely, email us.',
+        ],
+      },
+    ]
+  : [];
+
+const sections: DocSection[] = [
+  {
+    id: 'short-version',
+    title: 'The short version',
+    paragraphs: [
+      'Kloom has no accounts, no servers and no analytics. Everything you save stays on your device, and — if you turn Cloud Sync on — in your own private iCloud. We cannot see it, and we never sell or share it.',
+    ],
+  },
+  {
+    id: 'what-we-collect',
+    title: 'What we collect',
+    paragraphs: [whatWeCollect],
+  },
+  ...websiteSection,
+  {
+    id: 'storage',
+    title: 'What the app stores, and where',
+    paragraphs: [
+      'Your links, titles, notes, attached images, folders, spaces and saved offline articles are written to a private container on your device, shared only between Kloom and its Share Extension.',
+      'With Cloud Sync on, that data also syncs through Apple’s CloudKit into your own private iCloud database. It is tied to your Apple Account, and Apple’s terms govern it. The developer has no access to it.',
+    ],
+  },
+  {
+    id: 'network',
+    title: 'When the app uses the network',
+    paragraphs: [
+      'Saving a link fetches that page’s title, description, icon and preview image directly from the website you saved. Saving an article for offline reading downloads its text and images the same way.',
+      'Those requests go straight from your device to that website — there is no Kloom server in between. The site sees an ordinary visit, including your IP address, just as your browser would. We receive nothing.',
+    ],
+  },
+  {
+    id: 'purchases',
+    title: 'Purchases',
+    paragraphs: [
+      'Pro subscriptions are sold and processed by Apple. Payment happens in the App Store; we never see your card, billing address or Apple Account details. The app only asks Apple whether an active subscription exists, and remembers that yes/no answer on your device.',
+    ],
+  },
+  {
+    id: 'deleting',
+    title: 'Deleting your data',
+    paragraphs: [
+      'Deleting a link moves it to Trash, and Trash is purged automatically after the retention window or immediately when you delete it there. Removing the app deletes everything stored on the device.',
+      'If Cloud Sync was on, the iCloud copy is removed from Settings → your name → iCloud → Manage Account Storage → Kloom. Since we hold no copy, there is nothing to request from us.',
+    ],
+  },
+  {
+    id: 'children',
+    title: 'Children',
+    paragraphs: [
+      'Kloom is not directed at children under 13 and does not knowingly collect anything from them — or, in fact, from anyone.',
+    ],
+  },
+  {
+    id: 'changes',
+    title: 'Changes',
+    paragraphs: [
+      'If this policy changes, the updated version appears here with a new date. Material changes will also be noted in the App Store release notes.',
+    ],
+  },
+  {
+    id: 'contact',
+    title: 'Contact',
+    paragraphs: ['Questions about privacy?', emailUs],
+  },
+];
+---
+
+<V2Doc
+  title="Privacy Policy"
+  description="Kloom collects nothing. No accounts, no servers, no analytics."
+  updated="Last updated August 2026"
+  sections={sections}
+/>

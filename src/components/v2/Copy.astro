@@ -1,0 +1,546 @@
+---
+// Copying, given its own section — it's the thing people reach for most, and the
+// "Copied" animation is the app's signature moment. A phone walks through the
+// three parts of it, all mirrored from the app:
+//
+//   1. Copy      — CopiedOverlay in Kloom/LinkRowView.swift: the card's own
+//                  surface lights up, an iridescent glint (blue → white → purple)
+//                  rises along the border, and a checkmark pops beside "Copied".
+//   2. Recent    — RecentLinks.swift keeps the last 3 copied URLs; the home screen
+//                  floats them as a deck under a RECENT chip, above the + button.
+//   3. Open      — SafariView.swift opens the link inside Kloom as a dark page
+//                  sheet with a grabber, Reader mode on, Done to close.
+//
+// A full-bleed white band, so the page isn't one continuous off-white.
+import Logo from '../Logo.astro';
+import Row from './Row.astro';
+import { saved, story } from './items';
+
+const spaces = ['All', 'Watch', 'Shop', 'Read'];
+
+const steps = [
+  {
+    n: '01',
+    label: 'Copy',
+    title: 'One tap, and it’s on your clipboard.',
+    body: 'Every card carries a copy button — no opening the link, no select-all, no fumbling with the address bar. The card lights up so you know it landed.',
+  },
+  {
+    n: '02',
+    label: 'Recent',
+    title: 'The last three stay within reach.',
+    body: 'Whatever you copied recently waits in a small deck above the + button. Tap one to copy it again, swipe it away when you’re done.',
+  },
+  {
+    n: '03',
+    label: 'Open',
+    title: 'Or just read it, right here.',
+    body: 'Tap the card itself and the page opens inside Kloom — dark, reader mode on, and one swipe down to get back to your list.',
+  },
+];
+
+// The deck: the top pill plus two narrower plates peeking below it.
+const recents = [story, saved[0], saved[1]];
+---
+
+<section id="copy" class="band-white -mx-4 scroll-mt-28">
+  <div class="mx-auto max-w-3xl px-5 py-24 sm:py-32">
+    <div class="text-center">
+      <p data-rise class="text-xs font-medium tracking-wider text-neutral-500 uppercase">Copy</p>
+      <h2 data-rise style="--d: 80ms" class="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
+        The fastest way to pass a link on.
+      </h2>
+      <p data-rise style="--d: 160ms" class="mx-auto mt-5 max-w-lg text-base leading-relaxed text-pretty text-neutral-600">
+        Most of the time a saved link is on its way somewhere else — a chat, a doc, a browser. Kloom makes that the
+        shortest trip in the app.
+      </p>
+    </div>
+
+    <div data-rise style="--d: 240ms" class="mt-14 grid items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-14">
+      <!-- The steps. Each one is a button: tap it to jump the phone to that state. -->
+      <ol data-steps class="order-2 grid gap-2 lg:order-1">
+        {
+          steps.map((s, i) => (
+            <li>
+              <button
+                type="button"
+                data-step-btn={i + 1}
+                data-on={i === 0 ? '' : undefined}
+                class="group w-full cursor-pointer rounded-2xl px-5 py-4 text-left transition duration-300 data-on:bg-stone-50"
+              >
+                <p class="text-xs font-medium tracking-wider text-neutral-400 uppercase">
+                  <span class="tabular-nums">{s.n}</span> · {s.label}
+                </p>
+                <p class="mt-1.5 text-lg font-semibold tracking-tight text-balance text-neutral-400 transition duration-300 group-data-on:text-neutral-900">
+                  {s.title}
+                </p>
+                <span class="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] group-data-on:grid-rows-[1fr] group-data-on:opacity-100">
+                  <span class="overflow-hidden">
+                    <span class="mt-1.5 block text-sm leading-relaxed text-pretty text-neutral-600">{s.body}</span>
+                  </span>
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+
+      <!-- The phone. data-step on the frame drives which state is showing. -->
+      <div
+        data-copy-phone
+        data-step="1"
+        class="order-1 mx-auto w-[260px] shrink-0 rounded-[44px] bg-neutral-950 p-[3px] shadow-2xl ring-1 shadow-neutral-900/25 ring-neutral-800 lg:order-2"
+        role="img"
+        aria-label="Kloom: copying a link, the recently copied deck, and a link opening in the app"
+      >
+        <div class="relative h-[520px] w-full overflow-hidden rounded-[41px] bg-[#121212] text-white">
+          <div class="relative z-30 flex items-center justify-between px-6 pt-3 text-[11px] font-semibold" aria-hidden="true">
+            <span>9:41</span>
+            <span class="absolute top-2 left-1/2 h-6 w-20 -translate-x-1/2 rounded-full bg-black"></span>
+            <span class="flex items-center gap-1">
+              <svg viewBox="0 0 18 12" class="h-2 w-3.5 fill-current"><rect x="0" y="8" width="3" height="4" rx="1" /><rect x="5" y="5.5" width="3" height="6.5" rx="1" /><rect x="10" y="3" width="3" height="9" rx="1" /><rect x="15" y="0" width="3" height="12" rx="1" /></svg>
+              <svg viewBox="0 0 27 13" class="h-2.5 w-5"><rect x=".5" y=".5" width="22" height="12" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4" /><rect x="2" y="2" width="19" height="9" rx="2" fill="currentColor" /></svg>
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between px-3.5 pt-5">
+            <Logo class="h-3 w-auto text-white" />
+            <span class="flex gap-1.5" aria-hidden="true">
+              <span class="grid size-6 place-items-center rounded-[8px] bg-white/8 ring-1 ring-white/10">
+                <svg viewBox="0 0 16 16" class="size-2.5 fill-none stroke-neutral-400 stroke-2"><circle cx="7" cy="7" r="5" /><path d="M11 11l3.5 3.5" /></svg>
+              </span>
+              <span class="grid size-6 place-items-center rounded-[8px] bg-white/8 ring-1 ring-white/10">
+                <svg viewBox="0 0 16 16" class="size-2.5 fill-neutral-400"><circle cx="8" cy="5.5" r="3" /><path d="M2.5 15a5.5 5.5 0 0 1 11 0" /></svg>
+              </span>
+            </span>
+          </div>
+
+          <div class="mx-3.5 mt-2.5 flex gap-1 rounded-[10px] bg-white/5 p-[3px] text-[10px] ring-1 ring-white/8" aria-hidden="true">
+            {
+              spaces.map((s, i) => (
+                <span class:list={['flex-1 rounded-[8px] py-1 text-center', i === 0 ? 'bg-[#333] font-semibold text-white' : 'text-neutral-500']}>
+                  {s}
+                </span>
+              ))
+            }
+          </div>
+
+          <div class="flex items-center gap-1.5 px-3.5 pt-3.5 pb-1 text-[8px] font-bold tracking-wider text-neutral-500" aria-hidden="true">
+            <span>LINKS</span>
+            <span class="font-semibold text-neutral-600">52</span>
+            <svg viewBox="0 0 16 16" class="ml-auto size-2.5 fill-none stroke-neutral-500 stroke-[1.75]"><path d="M3 4.5h10M4.5 8h7M6.5 11.5h3" /></svg>
+          </div>
+
+          <div class="flex flex-col px-2.5">
+            <!-- The card that gets copied: a real button, so a tap really copies. -->
+            <button
+              type="button"
+              data-copy-card
+              data-url={`https://${story.host}`}
+              class="relative mb-1.5 w-full cursor-pointer rounded-[14px] bg-[#1a1a1a] p-2.5 text-left"
+            >
+              <span class="flex items-center gap-2.5">
+                <span class="grid size-8 shrink-0 place-items-center rounded-[10px] bg-[#2a2a2a] text-[13px] font-medium text-neutral-400">
+                  {story.host.charAt(0).toUpperCase()}
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="block truncate text-[12.5px] font-semibold text-neutral-100">{story.title}</span>
+                  <span class="mt-0.5 block truncate text-[10.5px] text-neutral-500">{story.host} • now</span>
+                </span>
+                <svg viewBox="0 0 20 20" class="size-3.5 shrink-0 fill-none stroke-neutral-500 stroke-[1.75]" aria-hidden="true">
+                  <rect x="7" y="7" width="10" height="10" rx="2.5" />
+                  <path d="M13 4.5A2.5 2.5 0 0 0 10.5 2h-6A2.5 2.5 0 0 0 2 4.5v6A2.5 2.5 0 0 0 4.5 13" />
+                </svg>
+              </span>
+
+              <span data-copied class="copied absolute inset-0 grid place-items-center rounded-[14px] bg-[#121212]">
+                <span class="flex items-center gap-2">
+                  <span class="check grid size-6 place-items-center rounded-full bg-white">
+                    <svg viewBox="0 0 16 16" class="size-3 fill-none stroke-[#121212] stroke-[3]"><path d="M3 8.5l3.2 3L13 4.5" /></svg>
+                  </span>
+                  <span class="label text-sm font-semibold text-white">Copied</span>
+                </span>
+              </span>
+
+              <span class="glint glow absolute inset-0 rounded-[14px]" aria-hidden="true"></span>
+              <span class="glint line absolute inset-0 rounded-[14px]" aria-hidden="true"></span>
+            </button>
+
+            {saved.slice(0, 4).map((item) => <Row item={item} />)}
+          </div>
+
+          <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-[#121212] via-[#121212]/85"></div>
+
+          <!-- The scrim sits under the deck and under the reader sheet: in the app
+               the list stays visible behind both, just dimmed. -->
+          <span data-scrim class="pointer-events-none absolute inset-0 bg-black/45 opacity-0 transition-opacity duration-500 ease-[cubic-bezier(.2,.8,.2,1)]" aria-hidden="true"></span>
+
+          <!-- 02 · the recently copied deck, above the + button. Tapping it opens the
+               deck out into its three pills. Both states are in flow and animate
+               their own height (grid-rows 1fr ↔ 0fr); because the whole block is
+               anchored by its bottom edge, the growth runs upward out of the
+               collapsed stack and carries the RECENT chip with it — the same move as
+               ContentView.collapsedRecentStack ↔ recentExpanded. -->
+          <button
+            type="button"
+            data-recent
+            data-recent-toggle
+            class="absolute inset-x-0 bottom-[68px] grid cursor-pointer justify-items-center gap-1.5"
+            aria-label="Recently copied links"
+          >
+            <span class="rounded-full bg-[#292929] px-2.5 py-1 text-[8px] font-semibold tracking-wider text-neutral-400 ring-1 ring-white/10">
+              RECENT
+            </span>
+
+            <span class="grid w-[200px]">
+              <!-- Collapsed: the top pill with two narrower plates peeking below. -->
+              <span data-recent-collapsed class="grid grid-rows-[1fr]">
+                <span class="block overflow-hidden">
+                  <span class="relative block h-[51px]">
+                    <span class="absolute top-[17px] left-1/2 h-[34px] w-[164px] -translate-x-1/2 rounded-[12px] bg-[#292929] opacity-75 ring-1 ring-white/10"></span>
+                    <span class="absolute top-[8.5px] left-1/2 h-[34px] w-[182px] -translate-x-1/2 rounded-[12px] bg-[#292929] opacity-90 ring-1 ring-white/10"></span>
+                    <span class="absolute inset-x-0 top-0 flex h-[34px] items-center gap-2 rounded-[12px] bg-[#333] px-3 ring-1 ring-white/10">
+                      <span class="grid size-5 shrink-0 place-items-center rounded-md bg-[#454545] text-[9px] font-medium text-neutral-300">
+                        {recents[0].host.charAt(0).toUpperCase()}
+                      </span>
+                      <span class="min-w-0 truncate text-[10.5px] font-medium">{recents[0].title}</span>
+                      <svg viewBox="0 0 20 20" class="ml-auto size-3 shrink-0 fill-none stroke-neutral-400 stroke-[1.75]">
+                        <rect x="7" y="7" width="10" height="10" rx="2.5" />
+                        <path d="M13 4.5A2.5 2.5 0 0 0 10.5 2h-6A2.5 2.5 0 0 0 2 4.5v6A2.5 2.5 0 0 0 4.5 13" />
+                      </svg>
+                    </span>
+                  </span>
+                </span>
+              </span>
+
+              <!-- Expanded: the deck opened out into its three links. -->
+              <span data-recent-expanded class="grid grid-rows-[0fr]">
+                <span class="block overflow-hidden">
+                  <span class="grid grid-cols-1 gap-2 pb-2">
+                    {
+                      recents.map((r) => (
+                        <span class="flex h-[34px] min-w-0 items-center gap-2 rounded-[12px] bg-[#333] px-3 ring-1 ring-white/10">
+                          <span class="grid size-5 shrink-0 place-items-center rounded-md bg-[#454545] text-[9px] font-medium text-neutral-300">
+                            {r.host.charAt(0).toUpperCase()}
+                          </span>
+                          <span class="min-w-0 truncate text-[10.5px] font-medium">{r.title}</span>
+                          <svg viewBox="0 0 20 20" class="ml-auto size-3 shrink-0 fill-none stroke-neutral-400 stroke-[1.75]">
+                            <rect x="7" y="7" width="10" height="10" rx="2.5" />
+                            <path d="M13 4.5A2.5 2.5 0 0 0 10.5 2h-6A2.5 2.5 0 0 0 2 4.5v6A2.5 2.5 0 0 0 4.5 13" />
+                          </svg>
+                        </span>
+                      ))
+                    }
+                  </span>
+                </span>
+              </span>
+            </span>
+          </button>
+
+          <div
+            class="absolute bottom-5 left-1/2 grid h-9 w-12 -translate-x-1/2 place-items-center rounded-[10px] bg-[#383838] ring-1 ring-white/10"
+            aria-hidden="true"
+          >
+            <svg
+              viewBox="0 0 16 16"
+              class="size-3.5 fill-none stroke-white stroke-2 transition-transform duration-500 ease-[cubic-bezier(.2,.8,.2,1)] [[data-recent-open]_&]:rotate-45"
+            >
+              <path d="M8 2v12M2 8h12" />
+            </svg>
+          </div>
+
+          <!-- 03 · the link opening inside Kloom: a dark page sheet with a grabber. -->
+          <div
+            data-reader
+            class="absolute inset-x-0 bottom-0 top-8 translate-y-full rounded-t-[20px] bg-[#0f0f0f] transition-transform duration-600 ease-[cubic-bezier(.2,.8,.2,1)] data-on:translate-y-0"
+            aria-hidden="true"
+          >
+            <div class="mx-auto mt-2 h-1 w-9 rounded-full bg-white/25"></div>
+            <div class="mt-2 flex items-center justify-between px-4 pb-2.5 text-[10px] text-neutral-400">
+              <span class="font-medium text-white">Done</span>
+              <span class="flex items-center gap-1">
+                <svg viewBox="0 0 12 14" class="size-2 fill-neutral-500"><path d="M2 6V4a4 4 0 0 1 8 0v2h1a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm2 0h4V4a2 2 0 0 0-4 0z" /></svg>
+                {story.host}
+              </span>
+              <span>Aa</span>
+            </div>
+            <div class="border-t border-white/10 px-5 pt-4">
+              <p class="text-[9px] font-medium tracking-wider text-neutral-500 uppercase">Essay · 9 min</p>
+              <p class="mt-1.5 text-lg leading-tight font-semibold tracking-tight">{story.title}</p>
+              <div class="mt-4 space-y-2">
+                <div class="h-1.5 rounded-full bg-white/10"></div>
+                <div class="h-1.5 rounded-full bg-white/10"></div>
+                <div class="h-1.5 w-11/12 rounded-full bg-white/10"></div>
+                <div class="h-1.5 w-4/5 rounded-full bg-white/10"></div>
+                <div class="h-1.5 rounded-full bg-white/10"></div>
+                <div class="h-1.5 w-3/5 rounded-full bg-white/10"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --- The Copied animation (step 01) ------------------------------------ */
+
+  /* Two identical iridescent bands over twice the card's height: sliding the
+     pattern up by exactly one card height makes the glint rise from the bottom
+     edge to the top and loop with no visible jump. Masked to the border only. */
+  .glint {
+    opacity: 0;
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 16%,
+      rgb(96 165 250 / 0.9) 22%,
+      #fff 25%,
+      rgb(192 132 252 / 0.9) 28%,
+      transparent 34%,
+      transparent 66%,
+      rgb(96 165 250 / 0.9) 72%,
+      #fff 75%,
+      rgb(192 132 252 / 0.9) 78%,
+      transparent 84%,
+      transparent 100%
+    );
+    background-size: 100% 200%;
+    background-position: 50% 0%;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .glint.line {
+    padding: 2px;
+  }
+  .glint.glow {
+    padding: 5px;
+    filter: blur(5px);
+  }
+
+  .copied {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .copied .check {
+    scale: 0.3;
+    opacity: 0;
+  }
+  .copied .label {
+    opacity: 0;
+  }
+
+  [data-copy-card][data-on] .copied {
+    opacity: 1;
+  }
+  [data-copy-card][data-on] .glint {
+    opacity: 1;
+    animation: glint-rise 1.5s linear infinite;
+  }
+  [data-copy-card][data-on] .glint.glow {
+    opacity: 0.8;
+  }
+  [data-copy-card][data-on] .check {
+    scale: 1;
+    opacity: 1;
+    /* A short overshoot — the CSS cousin of the app's spring. */
+    transition:
+      scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.3s ease;
+  }
+  [data-copy-card][data-on] .label {
+    opacity: 1;
+    transition: opacity 0.35s ease 0.08s;
+  }
+
+  @keyframes glint-rise {
+    from {
+      background-position: 50% 0%;
+    }
+    to {
+      background-position: 50% 100%;
+    }
+  }
+
+  /* --- The deck (step 02) ------------------------------------------------ */
+
+  /* It grows upward out of the + button, the way the app's stack does. */
+  [data-recent] {
+    opacity: 0;
+    scale: 0.92;
+    transform-origin: bottom center;
+    transition:
+      opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+      scale 0.55s cubic-bezier(0.2, 0.8, 0.2, 1),
+      translate 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+    translate: 0 12px;
+  }
+  /* The deck itself only exists on step 2 — it rises out of the + button. */
+  [data-copy-phone][data-step='2'] [data-recent] {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+
+  [data-copy-phone][data-step='3'] [data-scrim],
+  [data-copy-phone][data-recent-open] [data-scrim] {
+    opacity: 1;
+  }
+
+  /* Open/close, the way the app animates it: the collapsed deck's height rolls
+     down to nothing while the full list rolls open in its place. Both are in flow
+     and the block is anchored by its bottom edge, so the deck grows upward and
+     the RECENT chip rides up with it. 0.58s ease-out, no bounce — the app's own
+     `recentAnim` curve. */
+  [data-recent-collapsed],
+  [data-recent-expanded] {
+    transition:
+      grid-template-rows 0.58s cubic-bezier(0.2, 0, 0, 1),
+      opacity 0.38s cubic-bezier(0.2, 0, 0, 1);
+  }
+  [data-recent-expanded] {
+    opacity: 0;
+  }
+  [data-copy-phone][data-recent-open] [data-recent-collapsed] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  [data-copy-phone][data-recent-open] [data-recent-expanded] {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    /* The pills fade in once there is room for them, not while the deck is still
+       unrolling — otherwise they look like they are sliding out of the plate. */
+    transition-delay: 0s, 0.12s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-copy-card][data-on] .glint {
+      animation: none;
+    }
+    [data-recent],
+    [data-recent-collapsed],
+    [data-recent-expanded],
+    [data-reader] {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const section = document.querySelector('#copy');
+
+  if (section) {
+    // Reveal the block as it scrolls into view, like every other section.
+    const rise = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.setAttribute('data-on', '');
+          rise.unobserve(e.target);
+        }),
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    section.querySelectorAll('[data-rise]').forEach((el) => rise.observe(el));
+
+    const phone = section.querySelector<HTMLElement>('[data-copy-phone]')!;
+    const card = section.querySelector<HTMLElement>('[data-copy-card]')!;
+    const reader = section.querySelector<HTMLElement>('[data-reader]')!;
+    const buttons = Array.from(section.querySelectorAll<HTMLElement>('[data-step-btn]'));
+    const calm = matchMedia('(prefers-reduced-motion: reduce)');
+
+    const deck = section.querySelector<HTMLElement>('[data-recent-toggle]')!;
+    let timer = 0;
+    let copyTimer = 0;
+    let deckOpen = 0;
+    let deckClose = 0;
+
+    const setStep = (step: number) => {
+      phone.dataset.step = String(step);
+      buttons.forEach((b) => b.toggleAttribute('data-on', Number(b.dataset.stepBtn) === step));
+      reader.toggleAttribute('data-on', step === 3);
+      // The Copied state belongs to step 1 only; leaving it on would have the card
+      // still lit while the deck or the reader is the thing being shown.
+      clearTimeout(copyTimer);
+      card.toggleAttribute('data-on', step === 1);
+      if (step === 1) copyTimer = window.setTimeout(() => card.toggleAttribute('data-on', false), 3000);
+
+      // The deck shows itself closed, opens, and closes again while step 2 is up.
+      clearTimeout(deckOpen);
+      clearTimeout(deckClose);
+      phone.toggleAttribute('data-recent-open', false);
+      if (step === 2 && !calm.matches) {
+        deckOpen = window.setTimeout(() => phone.toggleAttribute('data-recent-open', true), 900);
+        deckClose = window.setTimeout(() => phone.toggleAttribute('data-recent-open', false), 4100);
+      }
+    };
+
+    // Switch the visible step without re-running its scripted beats — used when a
+    // tap on the deck takes over step 2.
+    const setStepChrome = (step: number) => {
+      phone.dataset.step = String(step);
+      buttons.forEach((b) => b.toggleAttribute('data-on', Number(b.dataset.stepBtn) === step));
+      reader.toggleAttribute('data-on', step === 3);
+      clearTimeout(copyTimer);
+      card.toggleAttribute('data-on', false);
+    };
+
+    // Auto-advance once the phone is on screen; a tap on any step takes over.
+    let playing = false;
+    const play = () => {
+      if (playing) return;
+      playing = true;
+      setStep(1);
+      timer = window.setInterval(() => {
+        if (document.visibilityState !== 'visible') return;
+        setStep((Number(phone.dataset.step) % 3) + 1);
+      }, 5600);
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        play();
+        io.disconnect();
+      });
+    });
+    io.observe(phone);
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        clearInterval(timer);
+        setStep(Number(b.dataset.stepBtn));
+      }),
+    );
+
+    // Tapping the deck opens and closes it, the same as in the app.
+    deck.addEventListener('click', () => {
+      clearInterval(timer);
+      clearTimeout(deckOpen);
+      clearTimeout(deckClose);
+      setStepChrome(2);
+      phone.toggleAttribute('data-recent-open');
+    });
+
+    // The card copies for real — the same thing the app's copy button does.
+    card.addEventListener('click', async () => {
+      clearInterval(timer);
+      setStep(1);
+      try {
+        await navigator.clipboard.writeText(card.dataset.url ?? '');
+      } catch {
+        // Clipboard permission can be refused; the confirmation still plays.
+      }
+    });
+
+    if (calm.matches) setStep(1);
+  }
+</script>

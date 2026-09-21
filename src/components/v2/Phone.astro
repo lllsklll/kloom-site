@@ -1,0 +1,208 @@
+---
+// Coded iPhone showing the real Kloom home screen. Everything here mirrors the
+// shipping app (Kloom/ContentView.swift, LinkRowView.swift, Shared/Theme.swift):
+//
+//   • the app is dark-only (Theme.isDarkOnly), page = appGray(0.07) = #121212,
+//     cards = appGray(0.1) = #1a1a1a, radius 14
+//   • header: the wordmark on the left, a 36pt search tile + avatar tile on the
+//     right; tapping search stretches that tile into a full-width field
+//   • one segmented space track ("All" + the spaces) with a sliding selected pill
+//   • a "LINKS NN" header with the sort menu, then the compact cards
+//   • a floating + tile centred at the bottom
+//
+// The intro script prepends rows to [data-list]; the scroll story toggles data-on
+// on the overlays below.
+import Row from './Row.astro';
+import Logo from '../Logo.astro';
+import { saved, story } from './items';
+import { url } from '../../lib/url';
+
+// The app's own tab bar: the virtual "All" page first, then the user's spaces.
+const spaces = ['All', 'Watch', 'Shop', 'Read'];
+---
+
+<div
+  data-phone
+  class="relative h-[620px] w-[300px] shrink-0 rounded-[50px] bg-neutral-950 p-[3px] shadow-2xl ring-1 shadow-neutral-900/25 ring-neutral-800"
+  role="img"
+  aria-label="The Kloom app: a list of saved videos, products, posts and articles"
+>
+  <div data-dark class="relative h-full w-full overflow-hidden rounded-[47px] bg-[#121212] text-white">
+    <div class="relative z-30 flex items-center justify-between px-7 pt-3.5 text-[13px] font-semibold" aria-hidden="true">
+      <span>9:41</span>
+      <span class="absolute top-2.5 left-1/2 h-7 w-24 -translate-x-1/2 rounded-full bg-black"></span>
+      <span class="flex items-center gap-1">
+        <svg viewBox="0 0 18 12" class="h-2.5 w-4 fill-current"><rect x="0" y="8" width="3" height="4" rx="1" /><rect x="5" y="5.5" width="3" height="6.5" rx="1" /><rect x="10" y="3" width="3" height="9" rx="1" /><rect x="15" y="0" width="3" height="12" rx="1" /></svg>
+        <svg viewBox="0 0 27 13" class="h-3 w-6"><rect x=".5" y=".5" width="22" height="12" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4" /><rect x="2" y="2" width="19" height="9" rx="2" fill="currentColor" /></svg>
+      </span>
+    </div>
+
+    <div class="relative flex items-center justify-between px-4 pt-6">
+      <Logo class="h-3.5 w-auto text-white" />
+      <span class="flex gap-1.5" aria-hidden="true">
+        <span class="grid size-7 place-items-center rounded-[9px] bg-white/8 ring-1 ring-white/10">
+          <svg viewBox="0 0 16 16" class="size-3 fill-none stroke-neutral-400 stroke-2"><circle cx="7" cy="7" r="5" /><path d="M11 11l3.5 3.5" /></svg>
+        </span>
+        <span class="grid size-7 place-items-center rounded-[9px] bg-white/8 ring-1 ring-white/10">
+          <svg viewBox="0 0 16 16" class="size-3 fill-neutral-400"><circle cx="8" cy="5.5" r="3" /><path d="M2.5 15a5.5 5.5 0 0 1 11 0" /></svg>
+        </span>
+      </span>
+
+      <!-- Search: the same tile stretched into the full-width field (the app's
+           single-element transform), shown during the "Find" step. It is opaque, so
+           it covers the wordmark and the avatar — in the app both slide away to give
+           the field the full width. -->
+      <div
+        data-search
+        class="absolute inset-x-4 bottom-0 flex h-7 origin-right scale-x-90 items-center gap-2 rounded-[9px] bg-[#1e1e1e] px-2.5 text-[11px] opacity-0 ring-1 ring-white/10 transition duration-400 ease-out data-on:scale-x-100 data-on:opacity-100"
+      >
+        <svg viewBox="0 0 16 16" class="size-3 shrink-0 fill-none stroke-neutral-400 stroke-2"><circle cx="7" cy="7" r="5" /><path d="M11 11l3.5 3.5" /></svg>
+        <span data-query class="font-medium"></span><span class="-ml-1.5 h-3 w-px animate-pulse bg-white"></span>
+      </div>
+    </div>
+
+    <!-- Space tabs: one track, a sliding pill on the selected page. -->
+    <div class="mx-4 mt-3 flex gap-1 rounded-xl bg-white/5 p-[3px] text-[11px] ring-1 ring-white/8" aria-hidden="true">
+      {
+        spaces.map((s, i) => (
+          <span
+            class:list={[
+              'flex-1 rounded-[9px] py-1.5 text-center',
+              i === 0 ? 'bg-[#333] font-semibold text-white' : 'text-neutral-500',
+            ]}
+          >
+            {s}
+          </span>
+        ))
+      }
+    </div>
+
+    <div class="flex items-center gap-1.5 px-4 pt-4 pb-1.5 text-[9px] font-bold tracking-wider text-neutral-500" aria-hidden="true">
+      <span data-list-label>LINKS</span>
+      <span data-count class="font-semibold text-neutral-600">46</span>
+      <svg viewBox="0 0 16 16" class="ml-auto size-3 fill-none stroke-neutral-500 stroke-[1.75]">
+        <path d="M3 4.5h10M4.5 8h7M6.5 11.5h3" />
+      </svg>
+    </div>
+
+    <div data-list class="flex flex-col px-3">
+      <Row item={story} isNew hidden calm />
+      {saved.map((item) => <Row item={item} />)}
+    </div>
+
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-[#121212] via-[#121212]/85"></div>
+    <!-- The floating add tile: a wide rounded rectangle centred at the bottom. -->
+    <div
+      class="absolute bottom-6 left-1/2 grid h-10 w-14 -translate-x-1/2 place-items-center rounded-[11px] bg-[#383838] ring-1 ring-white/10"
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 16 16" class="size-4 fill-none stroke-white stroke-2"><path d="M8 2v12M2 8h12" /></svg>
+    </div>
+
+    <!-- "Saved" toast after the Save step. -->
+    <div
+      data-toast
+      class="absolute top-12 left-1/2 z-20 flex -translate-x-1/2 -translate-y-2 items-center gap-1.5 rounded-full bg-[#2a2a2a] px-3.5 py-2 text-xs font-medium whitespace-nowrap text-white opacity-0 ring-1 ring-white/10 transition duration-400 data-on:translate-y-0 data-on:opacity-100"
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 16 16" class="size-3.5 fill-none stroke-emerald-400 stroke-[2.5]"><path d="M3 8.5l3.2 3L13 4.5" /></svg>
+      Saved to Read
+    </div>
+
+    <!-- Another app (Safari) with the iOS share sheet, then Kloom's own share
+         sheet on top. All of it in iOS dark, so the device never flashes white
+         mid-story — and so the glass navbar's dark state holds throughout. -->
+    <div
+      data-browser
+      class="absolute inset-0 z-10 translate-x-full bg-[#1c1c1e] text-white transition-transform duration-600 ease-[cubic-bezier(.2,.8,.2,1)] data-on:translate-x-0"
+      aria-hidden="true"
+    >
+      <div class="px-4 pt-12">
+        <div class="flex h-9 items-center justify-center gap-1.5 rounded-xl bg-white/10 text-xs text-neutral-300">
+          <svg viewBox="0 0 12 14" class="size-2.5 fill-neutral-400"><path d="M2 6V4a4 4 0 0 1 8 0v2h1a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm2 0h4V4a2 2 0 0 0-4 0z" /></svg>
+          {story.host}
+        </div>
+      </div>
+      <div class="px-5 pt-5">
+        <!-- The link's own preview image: a different painting from the one in the
+             page's interlude, so the phone isn't showing the same picture twice. -->
+        <img
+          src={url('article.jpg')}
+          alt=""
+          width="1200"
+          height="671"
+          loading="lazy"
+          decoding="async"
+          class="aspect-[16/10] w-full rounded-2xl object-cover opacity-90"
+        />
+        <p class="mt-4 text-[11px] font-medium tracking-wider text-neutral-500 uppercase">Essay</p>
+        <p class="mt-1 text-xl leading-tight font-semibold tracking-tight">{story.title}</p>
+        <div class="mt-3 space-y-2">
+          <div class="h-2 rounded-full bg-white/10"></div>
+          <div class="h-2 rounded-full bg-white/10"></div>
+          <div class="h-2 w-4/5 rounded-full bg-white/10"></div>
+          <div class="h-2 w-3/5 rounded-full bg-white/10"></div>
+        </div>
+      </div>
+
+      <div data-sheet class="absolute inset-x-0 bottom-0 translate-y-full rounded-t-[28px] bg-[#2c2c2e] px-4 pt-2 pb-9 shadow-[0_-8px_30px_rgb(0_0_0/0.45)] transition-transform duration-500 ease-out data-on:translate-y-0">
+        <div class="mx-auto h-1 w-9 rounded-full bg-white/25"></div>
+        <div class="mt-3 flex items-center gap-3 rounded-2xl bg-white/10 p-2.5">
+          <img src={url('article.jpg')} alt="" width="36" height="36" loading="lazy" class="size-9 shrink-0 rounded-lg object-cover" />
+          <div class="min-w-0">
+            <p class="truncate text-[13px] font-medium">{story.title}</p>
+            <p class="truncate text-[11px] text-neutral-400">{story.host}</p>
+          </div>
+        </div>
+        <div class="mt-4 flex justify-between px-1 text-center text-[10px] text-neutral-400">
+          <span class="flex flex-col items-center gap-1.5"><span class="size-12 rounded-[14px] bg-linear-to-b from-green-400 to-green-500"></span>Messages</span>
+          <span class="flex flex-col items-center gap-1.5"><span class="size-12 rounded-[14px] bg-linear-to-b from-sky-400 to-blue-500"></span>Mail</span>
+          <span class="flex flex-col items-center gap-1.5"><span class="size-12 rounded-[14px] bg-linear-to-b from-yellow-200 to-amber-300"></span>Notes</span>
+          <span class="flex flex-col items-center gap-1.5 font-medium text-white">
+            <img
+              data-kloom-icon
+              src={url('icon-256.png')}
+              alt=""
+              width="48"
+              height="48"
+              class="size-12 rounded-[14px] ring-0 ring-blue-500 ring-offset-2 ring-offset-[#2c2c2e] transition-all duration-300 data-on:scale-90 data-on:ring-2"
+            />
+            Kloom
+          </span>
+        </div>
+      </div>
+
+      <!-- Kloom's Share Extension (ShareExtension/ShareViewController.swift): the
+           title, the preview card, a note, and the space picker row. -->
+      <div data-compose class="absolute inset-x-0 bottom-0 translate-y-full rounded-t-[28px] bg-[#121212] px-5 pt-2 pb-9 text-white shadow-[0_-8px_30px_rgb(0_0_0/0.45)] transition-transform duration-500 ease-out data-on:translate-y-0">
+        <div class="mx-auto h-1 w-9 rounded-full bg-white/20"></div>
+        <p class="mt-3 text-[15px] font-semibold">Save to Kloom</p>
+        <div class="mt-3 flex items-center gap-3 rounded-[14px] bg-[#1a1a1a] p-2.5">
+          <img src={url('article.jpg')} alt="" width="36" height="36" loading="lazy" class="size-9 shrink-0 rounded-lg object-cover" />
+          <div class="min-w-0">
+            <p class="truncate text-[13px] font-medium">{story.title}</p>
+            <p class="truncate text-[11px] text-neutral-500">{story.host}</p>
+          </div>
+        </div>
+        <p class="mt-4 text-[10px] font-semibold tracking-wider text-neutral-500 uppercase">Note</p>
+        <div class="mt-1.5 rounded-[10px] bg-[#1a1a1a] px-3 py-2.5 text-[12px] text-neutral-600">Add a note…</div>
+        <div class="mt-3 flex items-center justify-between rounded-[10px] bg-[#1a1a1a] px-3 py-2.5 text-[12px]">
+          <span class="text-neutral-500">Space</span>
+          <span class="flex items-center gap-1.5">
+            <span
+              data-space="Read"
+              class="rounded-md px-2 py-0.5 font-medium text-neutral-300 transition duration-300 data-on:bg-white/10 data-on:text-white"
+            >
+              Read
+            </span>
+            <svg viewBox="0 0 12 16" class="size-2.5 fill-none stroke-neutral-500 stroke-[1.75]"><path d="M3 6.5L6 3.5l3 3M3 9.5l3 3 3-3" /></svg>
+          </span>
+        </div>
+        <div class="mt-4 flex items-center gap-2 text-[12px]">
+          <span class="flex-1 rounded-full bg-white/8 py-2 text-center text-neutral-300">Cancel</span>
+          <span data-save class="flex-1 rounded-full bg-white py-2 text-center font-semibold text-neutral-900 transition duration-200 data-on:scale-95 data-on:bg-white/80">Save</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
