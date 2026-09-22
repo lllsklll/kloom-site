@@ -147,8 +147,12 @@ const steps = [
 
     <!-- Preloader. Source: Bergman, Whittaker & Schooler (2021), J. of Librarianship and
          Information Science — only 41 of 250 (16%) bookmarked targets were retrieved via bookmarks. -->
+    <!-- The preloader's backdrop sits below the intro cards (z-30), not inside the
+         preloader above them. Hiding the cards behind it relied on z-order, and iOS
+         Safari draws a card that is mid-animation above it anyway, so one card showed
+         alone over the quote. The cards now hide only by their own fade-in. -->
+    <div data-pre-bg class="fixed inset-0 z-20 hidden bg-canvas in-[.intro]:block" aria-hidden="true"></div>
     <div data-preloader class="fixed inset-0 z-40 grid place-items-center px-6" aria-hidden="true">
-      <div data-pre-bg class="absolute inset-0 bg-canvas"></div>
       <figure class="relative max-w-[30rem]">
         <p
           data-pre-line
@@ -163,7 +167,8 @@ const steps = [
       </figure>
     </div>
 
-    <!-- Intro: links floating around the screen, before they fly into the phone. -->
+    <!-- Intro: links floating around the screen, before they fly into the phone.
+         Each card starts hidden and its reveal animation (fill: both) keeps it shown. -->
     <div data-intro-layer class="pointer-events-none fixed inset-3 z-30 m-auto max-h-(--intro-max-h) max-w-(--intro-max-w) sm:inset-6" aria-hidden="true">
       {
         floating.map((item, i) => (
@@ -171,7 +176,7 @@ const steps = [
             data-card={i}
             data-rot={item.rot}
             class:list={[
-              'absolute top-[calc(var(--my)*100%)] left-[calc(var(--mx)*100%)] w-38 [translate:calc(var(--mx)*-100%)_calc(var(--my)*-100%)] sm:top-[calc(var(--y)*100%)] sm:left-[calc(var(--x)*100%)] sm:w-52 xl:w-60 sm:[translate:calc(var(--x)*-100%)_calc(var(--y)*-100%)]',
+              'absolute opacity-0 top-[calc(var(--my)*100%)] left-[calc(var(--mx)*100%)] w-38 [translate:calc(var(--mx)*-100%)_calc(var(--my)*-100%)] sm:top-[calc(var(--y)*100%)] sm:left-[calc(var(--x)*100%)] sm:w-52 xl:w-60 sm:[translate:calc(var(--x)*-100%)_calc(var(--y)*-100%)]',
               item.wideOnly && 'max-xl:hidden',
             ]}
             style={`--x: ${item.x}; --y: ${item.y}; --mx: ${item.mx ?? item.x}; --my: ${item.my ?? item.y}; transform: rotate(${item.rot}deg)`}
@@ -214,7 +219,7 @@ const steps = [
 
         // 0. Preloader: the quote fades in and the stat counts up to 84.
         const pre = document.querySelector<HTMLElement>('[data-preloader]')!;
-        const preBg = pre.querySelector<HTMLElement>('[data-pre-bg]')!;
+        const preBg = document.querySelector<HTMLElement>('[data-pre-bg]')!;
         const stat = pre.querySelector<HTMLElement>('[data-stat]')!;
         pre.querySelectorAll<HTMLElement>('[data-pre-line]').forEach((el, i) =>
           el.animate(
@@ -236,7 +241,7 @@ const steps = [
 
         // 1. While the quote is still up, the backdrop clears and the links slowly
         //    surface behind it, then keep floating.
-        preBg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 1800, easing: 'ease', fill: 'forwards' });
+        preBg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 1800, easing: 'ease', fill: 'forwards' }).finished.then(() => preBg.remove());
         // Cards that would sit under the quote wait and come in as the quote leaves.
         const quote = pre.querySelector('figure')!.getBoundingClientRect();
         let late = 0;
@@ -249,8 +254,8 @@ const steps = [
               { opacity: 1, transform: `translateY(0) scale(1) ${rot}`, filter: 'blur(0)' },
             ],
             held
-              ? { duration: 1000, delay: 3900 + late++ * 150, easing: ease, fill: 'backwards' }
-              : { duration: 1600, delay: 300 + i * 220, easing: ease, fill: 'backwards' },
+              ? { duration: 1000, delay: 3900 + late++ * 150, easing: ease, fill: 'both' }
+              : { duration: 1600, delay: 300 + i * 220, easing: ease, fill: 'both' },
           );
         });
         await wait(3800);
