@@ -408,9 +408,19 @@ const steps = [
       const dots = Array.from(story.querySelectorAll<HTMLElement>('[data-step-dot]'));
       const on = (el: HTMLElement, state: boolean) => el.toggleAttribute('data-on', state);
 
-      // Keep the whole phone on screen under the navbar on short viewports.
+      const wide = matchMedia('(min-width: 1024px)');
+      const stage = story.querySelector<HTMLElement>('.sticky')!;
+      const navRoom = 96;
+      const edge = 24;
+      const captionGap = 16;
+
+      // Keep the whole phone on screen under the navbar. Sized from the pinned stage
+      // (100svh), not innerHeight: iOS Safari's innerHeight grows when its toolbar
+      // collapses, which made the phone taller than its stage and spill into the next
+      // section. Below lg the caption sits under the phone, so its room is kept free.
       const fit = () => {
-        wrap.style.scale = String(Math.min(1, (innerHeight - 96 - 24) / phone.offsetHeight));
+        const caption = wide.matches ? 0 : Math.max(...texts.map((t) => t.offsetHeight)) + captionGap;
+        wrap.style.scale = String(Math.min(1, (stage.clientHeight - navRoom - edge - caption) / phone.offsetHeight));
       };
       fit();
       addEventListener('resize', fit);
@@ -488,7 +498,6 @@ const steps = [
         [0.74, 1],
         [1, 1],
       ];
-      const wide = matchMedia('(min-width: 1024px)');
       const sway = (p: number) => {
         for (let i = 1; i < path.length; i++) {
           const [p0, v0] = path[i - 1];
