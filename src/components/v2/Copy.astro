@@ -330,14 +330,17 @@ const recents = [story, saved[0], saved[1]];
     );
     background-size: 100% 200%;
     background-position: 50% 0%;
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask-composite: exclude;
+    /* The prefixed pair must come first. Browsers now treat -webkit-mask as an
+       alias of mask, so written last it reset the composite to the legacy "xor",
+       which they no longer honour, and the glint filled the whole card. */
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
     transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .glint.line {
