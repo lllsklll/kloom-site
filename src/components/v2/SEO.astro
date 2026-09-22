@@ -1,0 +1,72 @@
+---
+// Everything search engines and link previews read from <head>. Every page uses
+// this, so a link shared from any page (WhatsApp, iMessage, X, LinkedIn, Slack)
+// unfurls into the same card instead of a bare URL.
+import { SITE } from '../../data/site';
+import { url } from '../../lib/url';
+
+interface Props {
+  title: string;
+  description: string;
+  // The homepage describes the app itself to Google (price, platform); the other
+  // pages are about the app, not the app.
+  app?: boolean;
+  // The 404 page must never be indexed or treated as a real URL.
+  noindex?: boolean;
+}
+
+const { title, description, app = false, noindex = false } = Astro.props;
+
+const site = Astro.site ?? 'https://kloom.app';
+// Pages build to /support.html (the App Store links need those paths), but the
+// sitemap lists them as /support and GitHub Pages serves both. Canonical follows
+// the sitemap so Google gets one consistent URL per page.
+const canonical = new URL(Astro.url.pathname.replace(/\.html$/, ''), site).href;
+// Previews need absolute URLs; a relative og:image is ignored by most crawlers.
+const image = new URL(url('og.jpg'), site).href;
+// Numeric App Store ID for Safari's "Open in App Store" banner, read from the
+// listing URL so it never drifts from the link the site already uses.
+const appStoreId = SITE.appStoreURL.match(/id(\d+)/)?.[1];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'MobileApplication',
+  name: SITE.name,
+  description: SITE.description,
+  operatingSystem: 'iOS',
+  applicationCategory: 'ProductivityApplication',
+  url: canonical,
+  downloadUrl: SITE.appStoreURL,
+  image,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+<link rel="icon" href={url('favicon.png')} type="image/png" />
+<link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
+<!-- Meta tags can't read CSS variables; this is --color-canvas, so Safari's bars
+     blend into the page. -->
+<meta name="theme-color" content="#f6f3ed" />
+{appStoreId && <meta name="apple-itunes-app" content={`app-id=${appStoreId}`} />}
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{!noindex && <meta property="og:url" content={canonical} />}
+<meta property="og:image" content={image} />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Kloom on iPhone: saved links as clean cards, sorted into spaces" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+
+{app && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

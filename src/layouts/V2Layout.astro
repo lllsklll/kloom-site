@@ -5,16 +5,15 @@
 import '../styles/v2.css';
 import Nav from '../components/v2/Nav.astro';
 import Footer from '../components/v2/Footer.astro';
-import { SITE } from '../data/site';
-import { url } from '../lib/url';
+import SEO from '../components/v2/SEO.astro';
 
 interface Props {
   title: string;
   description: string;
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://kloom.app').href;
+const { title, description, noindex = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -22,15 +21,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://kloom.app')
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="icon" href={url('favicon.png')} type="image/png" />
-    <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={SITE.name} />
+    <SEO title={title} description={description} noindex={noindex} />
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>

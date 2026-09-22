@@ -1,0 +1,61 @@
+---
+// Not found. Builds to /404.html, which GitHub Pages serves for any missing URL.
+// The visual is a Kloom link card that didn't make it: same card as the app's
+// list, with a broken chain where the thumbnail would be.
+import V2Layout from '../layouts/V2Layout.astro';
+import { url } from '../lib/url';
+---
+
+<V2Layout
+  title="Page not found — Kloom"
+  description="This page doesn't exist. Head back to Kloom, or get in touch with support."
+  noindex
+>
+  <section class="mx-auto flex max-w-xl flex-col items-center pb-32 text-center">
+    <div class="motion-safe:animate-float">
+      <div
+        class="flex w-72 -rotate-3 items-center gap-3 rounded-2xl border border-neutral-200 bg-white p-3 text-left shadow-lg shadow-neutral-900/5 sm:w-80"
+        aria-hidden="true"
+      >
+        <span class="grid size-12 shrink-0 place-items-center rounded-xl border border-dashed border-neutral-300 bg-neutral-50">
+          <!-- The wordmark's chain link, pulled apart. -->
+          <svg viewBox="0 0 24 24" class="size-6 fill-none stroke-neutral-400 stroke-[1.75] [stroke-linecap:round] [stroke-linejoin:round]">
+            <path d="M9.5 7.5H7a4.5 4.5 0 0 0 0 9h2.5M14.5 7.5H17a4.5 4.5 0 0 1 0 9h-2.5" />
+            <path d="M12 3v2M12 19v2M9 4.5l.8 1.4M15 4.5l-.8 1.4" />
+          </svg>
+        </span>
+        <span class="min-w-0">
+          <span class="block truncate text-[15px] font-medium text-neutral-900">Page not found</span>
+          <span class="mt-0.5 block truncate font-mono text-xs text-neutral-400" data-path>kloom.app</span>
+        </span>
+      </div>
+    </div>
+
+    <p class="mt-14 font-mono text-xs tracking-wider text-neutral-500 uppercase">Error 404</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">This link didn't save.</h1>
+    <p class="mt-5 max-w-md text-lg leading-relaxed text-pretty text-neutral-600">
+      The page you're looking for has moved or never existed. Everything else is right where you left it.
+    </p>
+
+    <div class="mt-10 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row">
+      <a
+        href={url()}
+        class="inline-flex h-12 w-full items-center justify-center rounded-full bg-neutral-900 px-6 text-base font-medium text-white transition hover:bg-neutral-700 sm:w-auto"
+      >
+        Back to home
+      </a>
+      <a
+        href={url('support.html')}
+        class="inline-flex h-12 w-full items-center justify-center rounded-full border border-neutral-200 bg-white px-6 text-base font-medium text-neutral-900 transition hover:border-neutral-300 sm:w-auto"
+      >
+        Get support
+      </a>
+    </div>
+  </section>
+</V2Layout>
+
+<script>
+  // Show the address that was actually missed, so the card reads like the saved link.
+  const path = document.querySelector<HTMLElement>('[data-path]');
+  if (path) path.textContent = location.host + location.pathname;
+</script>
