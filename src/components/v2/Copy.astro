@@ -56,7 +56,9 @@ const recents = [story, saved[0], saved[1]];
       </p>
     </div>
 
-    <div data-rise style="--d: 240ms" class="mt-14 grid items-center gap-5 lg:grid-cols-[1fr_auto] lg:gap-14">
+    <!-- pan-y hands sideways swipes to the script (to change step) and keeps
+         up/down for the page's own scroll. -->
+    <div data-rise data-swipe style="--d: 240ms" class="mt-14 grid touch-pan-y items-center gap-5 lg:grid-cols-[1fr_auto] lg:gap-14">
       <div class="order-2 lg:order-1">
         <!-- Below lg only the active step shows under the phone, so the copy and the
              phone stay on screen together; these tabs pick the step there. -->
@@ -67,10 +69,10 @@ const recents = [story, saved[0], saved[1]];
                 type="button"
                 data-step-btn={i + 1}
                 data-on={i === 0 ? '' : undefined}
-                class="group cursor-pointer px-1 py-3"
+                class="group cursor-pointer px-1.5 py-3"
                 aria-label={`Show step ${s.n}: ${s.label}`}
               >
-                <span class="block h-1 w-6 rounded-full bg-neutral-900 opacity-20 transition-opacity duration-300 group-data-on:opacity-100 motion-reduce:transition-none" />
+                <span class="block h-1.5 w-8 rounded-full bg-neutral-900 opacity-20 transition-opacity duration-300 group-data-on:opacity-100 motion-reduce:transition-none" />
               </button>
             ))
           }
@@ -545,6 +547,30 @@ const recents = [story, saved[0], saved[1]];
         setStep(Number(b.dataset.stepBtn));
       }),
     );
+
+    // A sideways swipe on touch screens moves one step, like paging through the
+    // app's own screens. It must be clearly sideways, so a slightly slanted page
+    // scroll never flips the step by accident.
+    const swipeMin = 40;
+    const sidewaysRatio = 1.5;
+    const stepCount = section.querySelectorAll('[data-steps] [data-step-btn]').length;
+    let start: { x: number; y: number } | null = null;
+    const area = section.querySelector<HTMLElement>('[data-swipe]')!;
+    area.addEventListener('pointerdown', (e) => {
+      start = e.pointerType === 'touch' ? { x: e.clientX, y: e.clientY } : null;
+    });
+    area.addEventListener('pointercancel', () => (start = null));
+    area.addEventListener('pointerup', (e) => {
+      if (!start) return;
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      start = null;
+      if (Math.abs(dx) < swipeMin || Math.abs(dx) < Math.abs(dy) * sidewaysRatio) return;
+      const next = Number(phone.dataset.step) + (dx < 0 ? 1 : -1);
+      if (next < 1 || next > stepCount) return;
+      clearInterval(timer);
+      setStep(next);
+    });
 
     // Tapping the deck opens and closes it, the same as in the app.
     deck.addEventListener('click', () => {
