@@ -93,7 +93,10 @@ const steps = [
       <!-- Scroll story: the hero phone pins to the screen and walks through Share → Save → Find. -->
       <section id="features" data-story class="relative -mx-4 h-[400svh]">
         <!-- No overflow clipping here: the intro lifts the phone above this stage. -->
-        <div class="sticky top-0 h-svh px-4 lg:top-(--story-shift)">
+        <!-- dvh, not svh: the phone is sized from this stage, and on iOS svh is the
+             height with Safari's toolbar fully open, which left a big empty band
+             under the caption once the toolbar shrank. -->
+        <div class="sticky top-0 h-dvh px-4 lg:top-(--story-shift)">
           <div class="relative mx-auto flex h-full max-w-3xl justify-center pt-24">
             <!-- On desktop the script slides this left/right with the scroll (translate + a slight swing). -->
             <div data-phone-wrap class="origin-top">
@@ -420,15 +423,17 @@ const steps = [
       const captionGap = 16;
 
       // Keep the whole phone on screen under the navbar. Sized from the pinned stage
-      // (100svh), not innerHeight: iOS Safari's innerHeight grows when its toolbar
-      // collapses, which made the phone taller than its stage and spill into the next
-      // section. Below lg the caption sits under the phone, so its room is kept free.
+      // itself, never a separate viewport measure: when the two disagreed on iOS the
+      // phone outgrew its stage and spilled into the next section. Below lg the
+      // caption sits under the phone, so its room is kept free.
       const fit = () => {
         const caption = wide.matches ? 0 : Math.max(...texts.map((t) => t.offsetHeight)) + captionGap;
         wrap.style.scale = String(Math.min(1, (stage.clientHeight - navRoom - edge - caption) / phone.offsetHeight));
       };
       fit();
-      addEventListener('resize', fit);
+      // Watches the stage, not the window: its dvh height changes as Safari's toolbar
+      // grows and shrinks, and iOS doesn't always report that as a window resize.
+      new ResizeObserver(fit).observe(stage);
 
       let saved = false;
       const setSaved = (state: boolean) => {
