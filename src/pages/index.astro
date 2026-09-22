@@ -2,7 +2,6 @@
 // The homepage: the intro, the scroll story, and the sections below it.
 import '../styles/v2.css';
 import { SITE } from '../data/site';
-import { url } from '../lib/url';
 import FloatCard from '../components/v2/FloatCard.astro';
 import Phone from '../components/v2/Phone.astro';
 import Row from '../components/v2/Row.astro';
@@ -14,6 +13,7 @@ import Pricing from '../components/v2/Pricing.astro';
 import FAQ from '../components/v2/FAQ.astro';
 import CTA from '../components/v2/CTA.astro';
 import Footer from '../components/v2/Footer.astro';
+import SEO from '../components/v2/SEO.astro';
 import { floating } from '../components/v2/items';
 
 // Kept to what the app actually does (see FAQ): you pick the space and can add a note.
@@ -41,10 +41,7 @@ const steps = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kloom — Save links from anywhere.</title>
-    <meta name="description" content={SITE.description} />
-    <link rel="icon" href={url('favicon.png')} type="image/png" />
-    <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
+    <SEO title="Kloom — Save links from anywhere." description={SITE.description} app />
     <script is:inline>
       // Every load starts at the top with the intro. The browser's scroll restoration and a
       // leftover #hash (from clicking "See how it works") would otherwise drop the page
