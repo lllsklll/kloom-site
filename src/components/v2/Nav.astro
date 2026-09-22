@@ -19,7 +19,7 @@ const links = [
 ];
 ---
 
-<header data-reveal class="pointer-events-none fixed inset-x-0 top-3 z-20 px-3">
+<header data-reveal data-nav class="group/nav pointer-events-none fixed inset-x-0 top-3 z-20 px-3">
   <div
     data-bar
     class="group pointer-events-auto relative isolate mx-auto flex h-14 max-w-3xl items-center gap-4 rounded-2xl bg-linear-to-b from-white/45 to-white/15 pr-2.5 pl-5 shadow-[inset_0_1px_0_rgb(255_255_255/1),inset_0_-1px_0_rgb(255_255_255/0.5),inset_0_0_24px_rgb(255_255_255/0.35)] backdrop-blur-xl backdrop-brightness-110 backdrop-saturate-200 transition-[background-color,box-shadow,--tw-gradient-from,--tw-gradient-to] duration-300 data-dark:from-neutral-900/80 data-dark:to-neutral-900/65 data-dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.35),inset_0_-1px_0_rgb(255_255_255/0.12),inset_0_0_24px_rgb(255_255_255/0.08)] data-dark:backdrop-brightness-75"
@@ -52,8 +52,70 @@ const links = [
     >
       Download
     </a>
+    <button
+      type="button"
+      data-menu-toggle
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Menu"
+      class="-ml-2 grid size-9 cursor-pointer place-items-center rounded-full text-neutral-900 transition-colors duration-300 hover:bg-neutral-900/5 group-data-dark:text-white group-data-dark:hover:bg-white/10 md:hidden"
+    >
+      <!-- Two bars that turn into an ×: moved only with transforms. -->
+      <span class="relative block h-3 w-4" aria-hidden="true">
+        <span class="absolute inset-x-0 top-1/2 h-[1.5px] -translate-y-1 rounded-full bg-current transition-transform duration-300 group-data-open/nav:translate-y-0 group-data-open/nav:rotate-45 motion-reduce:transition-none"></span>
+        <span class="absolute inset-x-0 top-1/2 h-[1.5px] translate-y-1 rounded-full bg-current transition-transform duration-300 group-data-open/nav:translate-y-0 group-data-open/nav:-rotate-45 motion-reduce:transition-none"></span>
+      </span>
+    </button>
   </div>
+
+  <!-- Phone menu: below md the bar has no room for the links. It fades and drops in
+       under the bar; inert while closed so its links can't be tabbed to. -->
+  <nav
+    id="mobile-menu"
+    data-menu
+    inert
+    aria-label="Main"
+    class="pointer-events-none mx-auto mt-2 max-w-3xl origin-top -translate-y-2 scale-[.98] rounded-2xl bg-white/85 p-2 opacity-0 shadow-[inset_0_1px_0_rgb(255_255_255/1),0_12px_32px_rgb(0_0_0/0.08)] backdrop-blur-xl backdrop-saturate-200 transition duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-data-open/nav:pointer-events-auto group-data-open/nav:translate-y-0 group-data-open/nav:scale-100 group-data-open/nav:opacity-100 motion-reduce:transition-none md:hidden"
+  >
+    {
+      links.map((l) => (
+        <a href={l.href} class="block rounded-xl px-4 py-3 text-base text-neutral-900 transition-colors duration-200 hover:bg-neutral-900/5">
+          {l.label}
+        </a>
+      ))
+    }
+  </nav>
 </header>
+
+<script>
+  // Phone menu. Closes on a link (most are same-page anchors, so nothing reloads to
+  // close it), on a tap outside the navbar, and on Escape.
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const toggle = nav?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = nav?.querySelector<HTMLElement>('[data-menu]');
+
+  if (nav && toggle && menu) {
+    const setOpen = (open: boolean) => {
+      nav.toggleAttribute('data-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      menu.inert = !open;
+    };
+    const isOpen = () => nav.hasAttribute('data-open');
+
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('click', (e) => {
+      if (isOpen() && !nav.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !isOpen()) return;
+      setOpen(false);
+      toggle.focus();
+    });
+  }
+</script>
 
 <script>
   // Flip the glass bar to its inverted palette while a dark block sits behind it.
