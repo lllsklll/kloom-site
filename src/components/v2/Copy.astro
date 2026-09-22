@@ -56,44 +56,66 @@ const recents = [story, saved[0], saved[1]];
       </p>
     </div>
 
-    <div data-rise style="--d: 240ms" class="mt-14 grid items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-14">
-      <!-- The steps. Each one is a button: tap it to jump the phone to that state. -->
-      <ol data-steps class="order-2 grid gap-2 lg:order-1">
-        {
-          steps.map((s, i) => (
-            <li>
+    <div data-rise style="--d: 240ms" class="mt-14 grid items-center gap-5 lg:grid-cols-[1fr_auto] lg:gap-14">
+      <div class="order-2 lg:order-1">
+        <!-- Below lg only the active step shows under the phone, so the copy and the
+             phone stay on screen together; these tabs pick the step there. -->
+        <div class="flex justify-center gap-1 lg:hidden">
+          {
+            steps.map((s, i) => (
               <button
                 type="button"
                 data-step-btn={i + 1}
                 data-on={i === 0 ? '' : undefined}
-                class="group w-full cursor-pointer rounded-2xl px-5 py-4 text-left transition duration-300 data-on:bg-stone-50"
+                class="group cursor-pointer px-1 py-3"
+                aria-label={`Show step ${s.n}: ${s.label}`}
               >
-                <p class="text-xs font-medium tracking-wider text-neutral-400 uppercase">
-                  <span class="tabular-nums">{s.n}</span> · {s.label}
-                </p>
-                <p class="mt-1.5 text-lg font-semibold tracking-tight text-balance text-neutral-400 transition duration-300 group-data-on:text-neutral-900">
-                  {s.title}
-                </p>
-                <span class="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] group-data-on:grid-rows-[1fr] group-data-on:opacity-100">
-                  <span class="overflow-hidden">
-                    <span class="mt-1.5 block text-sm leading-relaxed text-pretty text-neutral-600">{s.body}</span>
-                  </span>
-                </span>
+                <span class="block h-1 w-6 rounded-full bg-neutral-900 opacity-20 transition-opacity duration-300 group-data-on:opacity-100 motion-reduce:transition-none" />
               </button>
-            </li>
-          ))
-        }
-      </ol>
+            ))
+          }
+        </div>
+
+        <!-- The steps. Each one is a button: tap it to jump the phone to that state.
+             Below lg they share one grid cell and crossfade, all bodies open, so the
+             block keeps the tallest step's height and nothing under it jumps. -->
+        <ol data-steps class="grid gap-2 max-lg:mt-2">
+          {
+            steps.map((s, i) => (
+              <li class="max-lg:col-start-1 max-lg:row-start-1">
+                <button
+                  type="button"
+                  data-step-btn={i + 1}
+                  data-on={i === 0 ? '' : undefined}
+                  class="group w-full cursor-pointer rounded-2xl px-5 py-4 text-left transition duration-300 data-on:bg-stone-50 motion-reduce:transition-none max-lg:not-data-on:pointer-events-none max-lg:not-data-on:opacity-0"
+                >
+                  <p class="text-xs font-medium tracking-wider text-neutral-400 uppercase">
+                    <span class="tabular-nums">{s.n}</span> · {s.label}
+                  </p>
+                  <p class="mt-1.5 text-lg font-semibold tracking-tight text-balance text-neutral-400 transition duration-300 group-data-on:text-neutral-900">
+                    {s.title}
+                  </p>
+                  <span class="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] group-data-on:grid-rows-[1fr] group-data-on:opacity-100 max-lg:grid-rows-[1fr] max-lg:opacity-100">
+                    <span class="overflow-hidden">
+                      <span class="mt-1.5 block text-sm leading-relaxed text-pretty text-neutral-600">{s.body}</span>
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
 
       <!-- The phone. data-step on the frame drives which state is showing. -->
       <div
         data-copy-phone
         data-step="1"
-        class="order-1 mx-auto w-[260px] shrink-0 rounded-[44px] bg-neutral-950 p-[3px] shadow-2xl ring-1 shadow-neutral-900/25 ring-neutral-800 lg:order-2"
+        class="order-1 mx-auto w-[220px] shrink-0 lg:w-[260px] rounded-[44px] bg-neutral-950 p-[3px] shadow-2xl ring-1 shadow-neutral-900/25 ring-neutral-800 lg:order-2"
         role="img"
         aria-label="Kloom: copying a link, the recently copied deck, and a link opening in the app"
       >
-        <div class="relative h-[520px] w-full overflow-hidden rounded-[41px] bg-[#121212] text-white">
+        <div class="relative h-[440px] w-full lg:h-[520px] overflow-hidden rounded-[41px] bg-[#121212] text-white">
           <div class="relative z-30 flex items-center justify-between px-6 pt-3 text-[11px] font-semibold" aria-hidden="true">
             <span>9:41</span>
             <span class="absolute top-2 left-1/2 h-6 w-20 -translate-x-1/2 rounded-full bg-black"></span>
