@@ -5,17 +5,27 @@
 import { SITE } from '../../data/site';
 import { url } from '../../lib/url';
 
+// A blog post. Its title prop still carries " — Kloom" for the tab; headline is
+// the bare post title Google shows as the article's name.
+export interface Article {
+  headline: string;
+  published: Date;
+  updated?: Date;
+  section: string;
+}
+
 interface Props {
   title: string;
   description: string;
   // The homepage describes the app itself to Google (price, platform); the other
   // pages are about the app, not the app.
   app?: boolean;
+  article?: Article;
   // The 404 page must never be indexed or treated as a real URL.
   noindex?: boolean;
 }
 
-const { title, description, app = false, noindex = false } = Astro.props;
+const { title, description, app = false, article, noindex = false } = Astro.props;
 
 const site = Astro.site ?? 'https://kloom.app';
 // Pages build to /support.html (the App Store links need those paths), but the
@@ -24,11 +34,12 @@ const site = Astro.site ?? 'https://kloom.app';
 const canonical = new URL(Astro.url.pathname.replace(/\.html$/, ''), site).href;
 // Previews need absolute URLs; a relative og:image is ignored by most crawlers.
 const image = new URL(url('og.jpg'), site).href;
+const home = new URL(url(), site).href;
 // Numeric App Store ID for Safari's "Open in App Store" banner, read from the
 // listing URL so it never drifts from the link the site already uses.
 const appStoreId = SITE.appStoreURL.match(/id(\d+)/)?.[1];
 
-const jsonLd = {
+const appLd = {
   '@context': 'https://schema.org',
   '@type': 'MobileApplication',
   name: SITE.name,
@@ -40,6 +51,23 @@ const jsonLd = {
   image,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
 };
+
+// Posts are bylined to Kloom itself (owner's call), so author and publisher are
+// the same organisation.
+const kloom = { '@type': 'Organization', name: SITE.name, url: home };
+const articleLd = article && {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: article.headline,
+  description,
+  image,
+  datePublished: article.published.toISOString(),
+  dateModified: (article.updated ?? article.published).toISOString(),
+  articleSection: article.section,
+  author: kloom,
+  publisher: kloom,
+  mainEntityOfPage: canonical,
+};
 ---
 
 <title>{title}</title>
@@ -47,12 +75,13 @@ const jsonLd = {
 {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
 <link rel="icon" href={url('favicon.png')} type="image/png" />
 <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
+<link rel="alternate" type="application/rss+xml" title="Kloom blog" href={url('blog/rss.xml')} />
 <!-- Meta tags can't read CSS variables; this is --color-canvas, so Safari's bars
      blend into the page. -->
 <meta name="theme-color" content="#f6f3ed" />
 {appStoreId && <meta name="apple-itunes-app" content={`app-id=${appStoreId}`} />}
 
-<meta property="og:type" content="website" />
+<meta property="og:type" content={article ? 'article' : 'website'} />
 <meta property="og:site_name" content={SITE.name} />
 <meta property="og:locale" content="en_US" />
 <meta property="og:title" content={title} />
@@ -63,10 +92,20 @@ const jsonLd = {
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Kloom on iPhone: saved links as clean cards, sorted into spaces" />
+{
+  article && (
+    <>
+      <meta property="article:published_time" content={article.published.toISOString()} />
+      {article.updated && <meta property="article:modified_time" content={article.updated.toISOString()} />}
+      <meta property="article:section" content={article.section} />
+    </>
+  )
+}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={image} />
 
-{app && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+{app && <script type="application/ld+json" set:html={JSON.stringify(appLd)} />}
+{articleLd && <script type="application/ld+json" set:html={JSON.stringify(articleLd)} />}

@@ -16,6 +16,17 @@ export default defineConfig({
   // links to /support.html, /privacy.html and /terms.html, so those exact paths
   // must keep resolving. Index pages (/, /blog/, /blog/<post>/) stay pretty.
   build: { format: 'preserve' },
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // Blog pages are folders (/blog/<post>/index.html), and GitHub Pages
+      // redirects /blog/<post> to /blog/<post>/. The sitemap drops that slash, so
+      // it's put back to match each page's canonical URL and skip the redirect.
+      serialize(item) {
+        const path = new URL(item.url).pathname;
+        if (path.startsWith('/blog') && !path.endsWith('/')) item.url += '/';
+        return item;
+      },
+    }),
+  ],
   vite: { plugins: [tailwindcss()] },
 });

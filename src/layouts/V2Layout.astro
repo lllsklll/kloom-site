@@ -5,15 +5,16 @@
 import '../styles/v2.css';
 import Nav from '../components/v2/Nav.astro';
 import Footer from '../components/v2/Footer.astro';
-import SEO from '../components/v2/SEO.astro';
+import SEO, { type Article } from '../components/v2/SEO.astro';
 
 interface Props {
   title: string;
   description: string;
+  article?: Article;
   noindex?: boolean;
 }
 
-const { title, description, noindex = false } = Astro.props;
+const { title, description, article, noindex = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -21,7 +22,7 @@ const { title, description, noindex = false } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <SEO title={title} description={description} noindex={noindex} />
+    <SEO title={title} description={description} article={article} noindex={noindex} />
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>
