@@ -1,0 +1,71 @@
+---
+// One blog post. Lives at /blog/<file name>/ (an index page, so the URL stays
+// pretty under build.format "preserve"). Title and text share one column, the
+// navbar's width, so everything starts on the logo's left edge.
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import V2Layout from '../../../layouts/V2Layout.astro';
+import CTA from '../../../components/v2/CTA.astro';
+import { getPosts, readingTime, formatDate, type Post } from '../../../lib/blog';
+import { url } from '../../../lib/url';
+import '../../../styles/prose.css';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props as { post: Post };
+const { title, description, date, updated, category } = post.data;
+const { Content } = await render(post);
+---
+
+<V2Layout
+  title={`${title} — Kloom`}
+  description={description}
+  article={{ headline: title, published: date, updated, section: category }}
+>
+  <!-- Same box as the navbar: <main> pads 16px but the bar sits 12px in, so the
+       wrapper pulls out 4px; max-w-3xl and px-5 then match the bar's width and
+       its logo inset, and the text lines up under the logo at every size. -->
+  <div class="-mx-1">
+    <article class="mx-auto max-w-3xl px-5 pb-24">
+      <header>
+        <a
+          href={url('blog/')}
+          class="group inline-flex items-center gap-1.5 text-sm text-neutral-500 transition hover:text-neutral-900"
+        >
+          <svg viewBox="0 0 16 16" class="size-3.5 fill-none stroke-current stroke-[1.5] transition group-hover:-translate-x-0.5" aria-hidden="true">
+            <path d="M13 8H3M7 4L3 8l4 4" />
+          </svg>
+          Blog
+        </a>
+        <h1 class="mt-6 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{title}</h1>
+        <p class="mt-5 text-lg leading-relaxed text-pretty text-neutral-600">{description}</p>
+        <p class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-neutral-500">
+          <span class="rounded-full bg-white px-2.5 py-1 font-medium text-neutral-900">{category}</span>
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{readingTime(post)}</span>
+          {
+            updated && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>
+                  Updated <time datetime={updated.toISOString()}>{formatDate(updated)}</time>
+                </span>
+              </>
+            )
+          }
+        </p>
+      </header>
+
+      <div class="prose mt-14 sm:mt-20">
+        <Content />
+      </div>
+    </article>
+  </div>
+
+  <CTA />
+</V2Layout>
+
