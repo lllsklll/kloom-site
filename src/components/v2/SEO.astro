@@ -4,6 +4,7 @@
 // unfurls into the same card instead of a bare URL.
 import { SITE } from '../../data/site';
 import { url } from '../../lib/url';
+import Analytics from './Analytics.astro';
 
 // A blog post. Its title prop still carries " — Kloom" for the tab; headline is
 // the bare post title Google shows as the article's name.
@@ -109,3 +110,7 @@ const articleLd = article && {
 
 {app && <script type="application/ld+json" set:html={JSON.stringify(appLd)} />}
 {articleLd && <script type="application/ld+json" set:html={JSON.stringify(articleLd)} />}
+
+<!-- Not SEO, but this is the one <head> component every page renders, so the tag
+     reaches all of them without each layout remembering it. -->
+<Analytics />

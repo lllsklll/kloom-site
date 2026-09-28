@@ -18,13 +18,20 @@ export const mailto = (subject = 'Kloom') =>
   `mailto:${SITE.supportEmail}?subject=${encodeURIComponent(subject)}`;
 
 // Newsletter: a plain HTML form posting to Buttondown — no third-party script,
-// so the site stays tracker-free. Deferred for now (owner's call, 2026-09): the
+// so signing up adds no tracking of its own. Deferred for now (owner's call, 2026-09): the
 // form and its Privacy Policy section stay hidden everywhere until the Buttondown
 // username is set here.
 export const NEWSLETTER = {
   buttondownUsername: '',
 };
 export const newsletterEnabled = Boolean(NEWSLETTER.buttondownUsername);
+
+// Google Analytics for this website only (owner's call, 2026-09) — the app still
+// sends nothing. The "Kloom" property, "Kloom website" web stream. The Privacy
+// Policy's website section describes it; keep the two in step.
+export const ANALYTICS = {
+  measurementId: 'G-V5QQCPL1XF',
+};
 
 export const LIMITS = {
   freeSpaces: 3,
