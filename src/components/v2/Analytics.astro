@@ -1,0 +1,26 @@
+---
+// Google Analytics (GA4) for the website. Production builds only, so visits
+// from `astro dev` and previews never land in the real numbers.
+import { ANALYTICS } from '../../data/site';
+
+const { measurementId } = ANALYTICS;
+const enabled = import.meta.env.PROD && Boolean(measurementId);
+---
+
+{
+  enabled && (
+    <>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`} />
+      <script is:inline define:vars={{ measurementId }}>
+        window.dataLayer = window.dataLayer || [];
+        // gtag.js reads the arguments object itself, so this must stay a plain
+        // function rather than an arrow function.
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', measurementId);
+      </script>
+    </>
+  )
+}

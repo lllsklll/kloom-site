@@ -7,26 +7,28 @@ import { mailto, newsletterEnabled } from '../data/site';
 // The address is never printed on the site — only behind this button.
 const emailUs = `<a class="doc-button" href="${mailto('Kloom Privacy')}">Email us</a>`;
 
-// While the newsletter is on, the website collects one thing (an email address,
-// by choice), so "What we collect" is scoped to the app and a website section is
-// added. ⚠️ Mirror this in the app's LegalDocumentView in the next release.
-const whatWeCollect = newsletterEnabled
-  ? 'Nothing through the app. It has no sign-up, no profile and no login, so it never sends us your name, email address or any identifier. We run no analytics, no advertising and no third-party tracking SDKs.'
-  : 'Nothing. There is no sign-up, no profile and no login, so we never receive your name, email address or any identifier. We run no analytics, no advertising and no third-party tracking SDKs.';
+// The website runs Google Analytics (the app does not), so "What we collect" is
+// scoped to the app and the website gets its own section. ⚠️ Mirror the app-scoped
+// wording in the app's LegalDocumentView in the next release.
+const whatWeCollect =
+  'Nothing through the app. It has no sign-up, no profile and no login, so it never sends us your name, email address or any identifier. The app runs no analytics, no advertising and no third-party tracking SDKs.';
 
-const websiteSection: DocSection[] = newsletterEnabled
+const newsletterParagraphs = newsletterEnabled
   ? [
-      {
-        id: 'website',
-        title: 'This website and the newsletter',
-        paragraphs: [
-          'This website has no analytics, no cookies and no trackers.',
-          'If you choose to join the Kloom newsletter, you give us your email address. It is stored by our newsletter provider, Buttondown, and used only to send you news about Kloom and new posts from this site. We don’t track whether you open or click the emails, and we never sell or share your address.',
-          'Every email has an unsubscribe link, which stops all emails straight away. To have your address deleted entirely, email us.',
-        ],
-      },
+      'If you choose to join the Kloom newsletter, you give us your email address. It is stored by our newsletter provider, Buttondown, and used only to send you news about Kloom and new posts from this site. We don’t track whether you open or click the emails, and we never sell or share your address.',
+      'Every email has an unsubscribe link, which stops all emails straight away. To have your address deleted entirely, email us.',
     ]
   : [];
+
+const websiteSection: DocSection = {
+  id: 'website',
+  title: newsletterEnabled ? 'This website and the newsletter' : 'This website',
+  paragraphs: [
+    'This website uses Google Analytics to count visits and see which pages people read. Google sets cookies for this and receives your IP address and basic details about your browser and device. None of it is connected to the app or to anything you save in it.',
+    'You can block it with any content blocker, or opt out with Google’s <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">browser add-on</a>.',
+    ...newsletterParagraphs,
+  ],
+};
 
 const sections: DocSection[] = [
   {
@@ -41,7 +43,7 @@ const sections: DocSection[] = [
     title: 'What we collect',
     paragraphs: [whatWeCollect],
   },
-  ...websiteSection,
+  websiteSection,
   {
     id: 'storage',
     title: 'What the app stores, and where',
@@ -77,7 +79,7 @@ const sections: DocSection[] = [
     id: 'children',
     title: 'Children',
     paragraphs: [
-      'Kloom is not directed at children under 13 and does not knowingly collect anything from them — or, in fact, from anyone.',
+      'Kloom is not directed at children under 13, and the app does not knowingly collect anything from them — or, in fact, from anyone.',
     ],
   },
   {
@@ -97,7 +99,7 @@ const sections: DocSection[] = [
 
 <V2Doc
   title="Privacy Policy"
-  description="Kloom collects nothing. No accounts, no servers, no analytics."
-  updated="Last updated August 2026"
+  description="The Kloom app collects nothing: no accounts, no servers, no analytics. Here is what the app and this website do with data."
+  updated="Last updated September 2026"
   sections={sections}
 />
