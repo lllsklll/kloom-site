@@ -40,6 +40,7 @@ Your iPhone already comes with a few ways to keep links:
 - **Notes** — you can share almost anything into a note, but it quickly turns into one long list of URLs.
 - **Sending links to yourself** in Messages or WhatsApp — easy in the moment, hard to search later.
 - **Screenshots** — they capture what you saw, but not the link itself.
+- **Leaving the tab open** — the most common one of all, and the one that quietly grows to two hundred. [How to close your Safari tabs without losing them](/blog/close-safari-tabs-without-losing-them/) covers getting out of it.
 
 None of these are wrong. They just weren't built for keeping links, so links pile up in places you don't think to look.
 

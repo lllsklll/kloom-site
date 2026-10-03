@@ -12,7 +12,7 @@ Most people don't have a saving problem — they have a pile. A few hundred link
 
 This guide is about the other half: giving saved links a shape that survives a busy month. The ideas work anywhere, and the steps are written for [Kloom](/), a small iPhone app built for exactly this.
 
-If you're still figuring out the saving part, start with [how to save links from any app on iPhone](/blog/save-links-from-any-app-on-iphone/) and come back.
+If you're still figuring out the saving part, start with [how to save links from any app on iPhone](/blog/save-links-from-any-app-on-iphone/) and come back. And if the pile you're facing is mostly open Safari tabs, [how to close your Safari tabs without losing them](/blog/close-safari-tabs-without-losing-them/) clears those first.
 
 ## Start with three buckets, not twenty
 

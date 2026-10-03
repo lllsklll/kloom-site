@@ -71,6 +71,8 @@ Don't try to move the whole chat. Most of those links have done their job, and m
 3. Scroll through the last month or two. For each link you'd genuinely open again, open it and save it to Kloom with a one-line note.
 4. Ignore the rest. If it mattered, it'll come back.
 
+The same trick works for an overflowing Safari tab bar, which is the other place links go to wait: [how to close your Safari tabs without losing them](/blog/close-safari-tabs-without-losing-them/) walks through it.
+
 If you save something twice by accident, Kloom notices. It asks *"This link is already saved in this space. Save it again anyway?"*, so a migration never leaves you with duplicates.
 
 ## Finding it again
