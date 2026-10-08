@@ -11,7 +11,7 @@ export const SITE = {
   manageSubscriptionsURL: 'https://apps.apple.com/account/subscriptions',
   // Same address as AppConstants.supportEmail in the app. Owner's call: never
   // print it as visible text — only ever behind an "Email us" link/button.
-  supportEmail: 'llskll.ranu@gmail.com',
+  supportEmail: 'support@kloom.app',
 };
 
 export const mailto = (subject = 'Kloom') =>
