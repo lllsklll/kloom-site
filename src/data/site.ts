@@ -14,6 +14,14 @@ export const SITE = {
   supportEmail: 'support@kloom.app',
 };
 
+// Brand social accounts (@kloomapp, created 2026-11-16). Shown in the footer and
+// listed as the organisation's sameAs profiles in the structured data.
+export const SOCIAL = [
+  { label: 'Instagram', href: 'https://instagram.com/kloomapp' },
+  { label: 'X', href: 'https://x.com/kloomapp' },
+  { label: 'Threads', href: 'https://threads.net/@kloomapp' },
+];
+
 export const mailto = (subject = 'Kloom') =>
   `mailto:${SITE.supportEmail}?subject=${encodeURIComponent(subject)}`;
 

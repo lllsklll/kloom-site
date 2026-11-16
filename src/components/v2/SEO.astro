@@ -2,7 +2,7 @@
 // Everything search engines and link previews read from <head>. Every page uses
 // this, so a link shared from any page (WhatsApp, iMessage, X, LinkedIn, Slack)
 // unfurls into the same card instead of a bare URL.
-import { SITE } from '../../data/site';
+import { SITE, SOCIAL } from '../../data/site';
 import { url } from '../../lib/url';
 import Analytics from './Analytics.astro';
 
@@ -55,7 +55,12 @@ const appLd = {
 
 // Posts are bylined to Kloom itself (owner's call), so author and publisher are
 // the same organisation.
-const kloom = { '@type': 'Organization', name: SITE.name, url: home };
+const kloom = {
+  '@type': 'Organization',
+  name: SITE.name,
+  url: home,
+  sameAs: SOCIAL.map((s) => s.href),
+};
 const articleLd = article && {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
