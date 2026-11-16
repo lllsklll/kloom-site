@@ -2,7 +2,7 @@
 // Footer for v2. Same links as the v1 footer — Support, Privacy and Terms must
 // stay reachable from every page, because the App Store listing points at them.
 import Logo from '../Logo.astro';
-import { SITE } from '../../data/site';
+import { SITE, SOCIAL } from '../../data/site';
 import { url } from '../../lib/url';
 const year = new Date().getFullYear();
 
@@ -28,11 +28,16 @@ const columns = [
     title: 'Get Kloom',
     links: [{ label: 'App Store', href: SITE.appStoreURL }],
   },
+  {
+    title: 'Follow',
+    // rel="me" marks these as Kloom's own profiles.
+    links: SOCIAL.map((s) => ({ ...s, rel: 'me' })),
+  },
 ];
 ---
 
 <footer class="mx-auto max-w-3xl px-5 pb-12">
-  <div class="grid grid-cols-2 gap-10 border-t border-neutral-200 pt-12 sm:grid-cols-[2fr_repeat(3,1fr)]">
+  <div class="grid grid-cols-2 gap-10 border-t border-neutral-200 pt-12 sm:grid-cols-[2fr_repeat(4,1fr)]">
     <div class="col-span-2 sm:col-span-1">
       <Logo class="h-3.5 w-auto text-neutral-900" />
       <p class="mt-4 text-sm text-neutral-500">{SITE.tagline}</p>
@@ -44,7 +49,7 @@ const columns = [
           <ul class="mt-4 grid gap-2.5">
             {col.links.map((l) => (
               <li>
-                <a href={l.href} class="text-sm text-neutral-600 transition hover:text-neutral-900">
+                <a href={l.href} rel={l.rel} class="text-sm text-neutral-600 transition hover:text-neutral-900">
                   {l.label}
                 </a>
               </li>
